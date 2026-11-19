@@ -945,14 +945,17 @@
     const btn = $("#sendBtn");
     btn.disabled = true;
     btn.textContent = CHECKOUT_READY ? "Taking you to checkout… 🫧" : "Sending… 🫧";
-    fetch("/", {
+    const formBody = () => new URLSearchParams(new FormData(e.target)).toString();
+    const sendForm = (body) => fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(new FormData(e.target)).toString(),
-    }).then((r) => {
-      if (!r.ok) throw 0;
+      body,
+    }).then((r) => { if (!r.ok) throw 0; });
+    // With Square on: no email yet. Save the order here and only send it to Deanna after they pay.
+    (CHECKOUT_READY ? Promise.resolve() : sendForm(formBody())).then(() => {
       if (!CHECKOUT_READY) return finish();
-      // order details are saved; now make a Square checkout for this exact slime
+      $("#summaryField").value = "✅ PAID with Square\n\n" + text;
+      try { sessionStorage.setItem("jb-pending-order", formBody()); } catch (_) {}
       return fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -963,9 +966,14 @@
           email: $("#custEmail").value.trim(), summary: text,
         }),
       }).then((r) => r.json()).then((d) => {
-        if (d && d.url) location.href = d.url;
-        else finish();
-      }).catch(() => finish());
+        if (d && d.url) { location.href = d.url; return; }
+        throw 0;
+      }).catch(() => {
+        // Square didn't answer: fall back to the old way (order request + payment link by email)
+        $("#summaryField").value = text;
+        try { sessionStorage.removeItem("jb-pending-order"); } catch (_) {}
+        return sendForm(formBody()).then(finish);
+      });
     }).catch(() => {
       btn.disabled = false; btn.textContent = CHECKOUT_READY ? "Continue to payment 💳" : "Send my order request";
       fail("That didn't go through. Please try again, or email support@jellybeanslime.com.");
@@ -982,6 +990,14 @@
   }).catch(() => {});
   // back from Square after paying
   if (new URLSearchParams(location.search).get("paid")) {
+    // they paid: now send Deanna the order details (once)
+    let saved = null;
+    try { saved = sessionStorage.getItem("jb-pending-order"); } catch (_) {}
+    if (saved && LIVE) fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: saved,
+    }).then((r) => { if (r.ok) try { sessionStorage.removeItem("jb-pending-order"); } catch (_) {} }).catch(() => {});
     $("#order").hidden = true;
     $("#done").hidden = false;
     $("#doneSummary").textContent = "";

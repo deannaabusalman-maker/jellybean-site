@@ -39,13 +39,13 @@ export default async (req) => {
   const ship = b.pickup === "ship";
   const slimePrice = BASES[b.base] + DELUXE[b.deluxe] + addinTotal;
 
-  const clean = (s, n) => String(s || "").replace(/[\u0000-\u001f]+/g, " ").trim().slice(0, n);
+  const clean = (s, n) => String(s || "").replace(/[\u0000-\u0009\u000b-\u001f]+/g, " ").trim().slice(0, n);
   const name = clean(b.slimeName, 18);
   const lineItems = [{
     name: name ? `Custom slime: ${name}` : "Build your own slime (6 oz)",
     quantity: "1",
     base_price_money: { amount: Math.round(slimePrice * 100), currency: "USD" },
-    note: clean(b.summary, 480),
+    note: clean(b.summary, 1900),
   }];
   if (ship) lineItems.push({
     name: "Shipping (U.S. flat rate)", quantity: "1",
