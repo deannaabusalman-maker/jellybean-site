@@ -468,6 +468,12 @@
     </div>
   </form>
 
+  <!-- "might be interested" alerts: someone tapped Continue to payment but hasn't paid yet -->
+  <form name="slime-interest" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="slime-interest">
+    <input name="bot-field"><input name="name"><input name="email"><textarea name="summary"></textarea>
+  </form>
+
   <section class="step done" id="done" hidden>
     <h2 style="justify-content:center">You're on the slime list! 🫧</h2>
     <p id="doneMsg" style="margin:0"></p>
@@ -956,6 +962,13 @@
       if (!CHECKOUT_READY) return finish();
       $("#summaryField").value = "✅ PAID with Square\n\n" + text;
       try { sessionStorage.setItem("jb-pending-order", formBody()); } catch (_) {}
+      // heads-up email: they might be interested (not paid yet). Never blocks checkout.
+      sendForm(new URLSearchParams({
+        "form-name": "slime-interest",
+        name: $("#custName").value.trim(),
+        email: $("#custEmail").value.trim(),
+        summary: "👀 MIGHT BE INTERESTED: they went to checkout but haven't paid yet.\nIf they pay, you'll get a separate ✅ PAID email.\n\n" + text,
+      }).toString()).catch(() => {});
       return fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
