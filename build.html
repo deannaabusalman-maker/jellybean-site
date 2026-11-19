@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Build your own custom slime: pick a base, color, add-ins and a name. Handmade in Lafayette, LA.">
+<meta property="og:title" content="Build your own slime · Jellybean Slime">
+<meta property="og:description" content="Pick it, mix it, name it. We'll make it by hand in Lafayette, LA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jellybeanslime.com/build.html">
+<meta property="og:image" content="https://jellybeanslime.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Build your own slime · Jellybean Slime</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@700;800&family=Fredoka:wght@600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* One centered column of chunky sticker-style cards, same look as jellybeanslime.com. Single light candy theme on purpose. */
+  :root {
+    --bg: #fff0f7;
+    --ink: #2d1b5a;
+    --card: #ffffff;
+    --pink: #ff5fa2;
+    --mint: #3ddbb0;
+    --sky: #4cc9f0;
+    --purple: #9b5de5;
+    --yellow: #ffd23f;
+    --soft: #f6e9f7;
+    --display: "Fredoka", "Arial Rounded MT Bold", system-ui, sans-serif;
+    --body: "Nunito", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--body); font-weight: 600; font-size: 17px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 20px 48px;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; display: grid; gap: 26px; }
+  .test-banner {
+    background: var(--yellow); border: 3px solid var(--ink); border-radius: 14px;
+    padding: 8px 14px; font-size: 14px; text-align: center;
+  }
+  header { text-align: center; display: grid; justify-items: center; gap: 6px; }
+  header img { width: 96px; height: 96px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 8vw, 44px); line-height: 1.05; margin: 4px 0 0; text-wrap: balance; }
+  .lede { margin: 0; opacity: .8; }
+
+  /* live preview */
+  .preview {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background:
+      radial-gradient(circle at 12% 85%, #ffd6ea 0 22%, transparent 23%),
+      radial-gradient(circle at 92% 12%, #d9efff 0 16%, transparent 17%),
+      radial-gradient(#f3e3ff 1.5px, transparent 1.6px) 0 0 / 16px 16px,
+      #fffafc;
+    border: 3px solid var(--ink); border-radius: 24px;
+    box-shadow: 5px 5px 0 var(--purple);
+    display: grid; grid-template-columns: 170px 1fr; gap: 18px; align-items: center;
+    padding: 12px 16px;
+  }
+  .scent-badge { position: absolute; left: 150px; bottom: 12px; width: 44px; height: 44px; display: grid; place-items: center; font-size: 25px; background: #fff; border: 2.5px solid var(--ink); border-radius: 50%; box-shadow: 2px 2px 0 var(--pink); z-index: 2; }
+  .scent-badge[hidden] { display: none !important; }
+  .preview #jar { width: 170px; height: 163px; display: block; overflow: visible; }
+  .preview .info { min-width: 0; }
+  .preview .pname { font-family: var(--display); font-size: 28px; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere; }
+  .preview .pdesc { font-size: 15px; opacity: .8; margin-top: 2px; }
+  .preview .price { font-family: var(--display); font-size: 34px; font-weight: 700; color: var(--pink); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  .step {
+    background: var(--card); border: 3px solid var(--ink); border-radius: 24px;
+    padding: 18px 16px; display: grid; gap: 12px; min-width: 0;
+  }
+  .step h2 { font-family: var(--display); font-weight: 700; font-size: 27px; margin: 0; display: flex; align-items: center; gap: 10px; }
+  .num {
+    display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+    background: var(--ink); color: #fff; font-size: 17px; flex: none;
+  }
+  .hint { font-size: 14px; opacity: .75; margin: -4px 0 0; }
+
+  .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .opt { position: relative; }
+  .opt > input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt > label {
+    display: grid; gap: 2px; height: 100%; cursor: pointer;
+    border: 3px solid var(--ink); border-radius: 16px; padding: 10px 12px; background: var(--card);
+    transition: transform .1s;
+  }
+  .opt label b { font-family: var(--display); font-weight: 600; font-size: 20px; }
+  .opt label span { font-size: 13px; opacity: .75; }
+  .opt label em { font-style: normal; font-size: 13px; color: var(--purple); font-weight: 800; }
+  .opt > input:checked + label { background: var(--soft); box-shadow: 3px 3px 0 var(--pink); transform: translate(-1px,-1px); }
+  .opt > input:focus-visible + label { outline: 3px solid var(--sky); outline-offset: 2px; }
+  .opt > input:disabled + label { opacity: .4; cursor: not-allowed; }
+
+  /* add-in rows: tap to add, then extra options slide open */
+  .addins { display: grid; gap: 10px; }
+  .addin { border: 3px solid var(--ink); border-radius: 16px; overflow: hidden; }
+  .addin.on { box-shadow: 3px 3px 0 var(--pink); background: var(--soft); }
+  .addin.off { opacity: .4; }
+  .addin-head { display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; }
+  .addin-head input { width: 22px; height: 22px; accent-color: var(--pink); flex: none; }
+  .addin-head .t { flex: 1; min-width: 0; display: grid; }
+  .addin-head b { font-family: var(--display); font-weight: 600; font-size: 20px; }
+  .addin-head span { font-size: 13px; opacity: .75; }
+  .addin-head em { font-style: normal; font-size: 13px; color: var(--purple); font-weight: 800; }
+  .addin-more { padding: 0 12px 12px; display: grid; gap: 10px; }
+  .mini-label { font-size: 13px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill input { position: absolute; opacity: 0; pointer-events: none; }
+  .pill label {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 15px;
+    border: 2px solid var(--ink); border-radius: 999px; padding: 6px 12px; background: var(--card);
+  }
+  .pill input:checked + label { background: var(--ink); color: #fff; }
+  .pill input:focus-visible + label { outline: 3px solid var(--sky); outline-offset: 2px; }
+  .pill .chip { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--ink); }
+
+  /* color swatches with a glossy, squishy look */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 14px 8px; }
+  .sw input { position: absolute; opacity: 0; pointer-events: none; }
+  .sw label { display: grid; justify-items: center; gap: 6px; cursor: pointer; font-size: 12px; text-align: center; }
+  .sw .dot {
+    width: 64px; height: 58px; border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+    border: 3px solid var(--ink); position: relative; overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,.95) 0 9%, rgba(255,255,255,0) 22%),
+      radial-gradient(circle at 70% 85%, rgba(0,0,0,.22), rgba(0,0,0,0) 55%),
+      radial-gradient(circle at 40% 35%, var(--c2), var(--c1) 70%);
+    box-shadow: inset -4px -5px 0 rgba(0,0,0,.08), 0 3px 0 rgba(45,27,90,.25);
+  }
+  .sw .dot.pearl {
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,1) 0 9%, rgba(255,255,255,0) 22%),
+      conic-gradient(from 200deg at 55% 55%, #fdf6ff, #f3e6ff, #e6f7ff, #fff2f8, #fffbe8, #fdf6ff);
+  }
+  .sw .dot.emo { display: grid; place-items: center; font-size: 30px; background: radial-gradient(circle at 35% 30%, #fff, var(--c2)); }
+  .sw input:checked + label .dot { box-shadow: 0 0 0 4px var(--bg), 0 0 0 7px var(--pink); }
+  .sw input:focus-visible + label .dot { outline: 3px solid var(--sky); outline-offset: 4px; }
+
+  .warn { border: 2px dashed var(--ink); border-radius: 12px; padding: 8px 12px; font-size: 13px; background: var(--bg); }
+
+  .field { display: grid; gap: 6px; }
+  .field label { font-size: 14px; }
+  input[type=text], input[type=email], select, textarea {
+    font: inherit; font-size: 16px; color: var(--ink); background: var(--bg);
+    border: 3px solid var(--ink); border-radius: 14px; padding: 12px 14px; width: 100%;
+  }
+  textarea { min-height: 80px; resize: vertical; }
+  input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus { outline: none; border-color: var(--pink); }
+  .count { font-size: 12px; opacity: .6; text-align: right; }
+  .ideas { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ideas button {
+    font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); cursor: pointer;
+    border: 2px dashed var(--ink); border-radius: 999px; padding: 4px 10px;
+  }
+  .ideas button:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+
+  button.send {
+    font-family: var(--display); font-weight: 600; font-size: 20px;
+    padding: 16px; border-radius: 999px; border: 3px solid var(--ink);
+    background: var(--pink); color: #fff; cursor: pointer; box-shadow: 4px 4px 0 var(--ink);
+  }
+  button.send:active { transform: translate(4px,4px); box-shadow: none; }
+  button.send:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+  .err { color: #c2185b; font-size: 14px; margin: 0; }
+  .included { display: inline-block; margin: 10px auto 0; padding: 7px 14px; background: #fff; border: 2.5px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: 15px; box-shadow: 3px 3px 0 var(--yellow); }
+  .agree { border: 2.5px dashed var(--ink); border-radius: 18px; padding: 14px 16px; background: #fff8d6; display: grid; gap: 10px; }
+  .agree p { margin: 0; font-size: 14.5px; line-height: 1.45; }
+  .agree label { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .agree input { width: 22px; height: 22px; flex: none; margin: 1px 0 0; accent-color: var(--pink); }
+
+  .done { text-align: center; }
+  .done pre {
+    text-align: left; white-space: pre-wrap; background: var(--bg); border-radius: 12px; padding: 12px;
+    font-family: var(--body); font-size: 14px; margin: 0; overflow-x: auto;
+  }
+  .again { background: none; border: none; color: var(--purple); font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; }
+  footer { text-align: center; font-size: 13px; opacity: .7; line-height: 1.6; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #jar { transform-origin: 50% 95%; }
+    @keyframes wob { 0%,100% { transform: scale(1,1) } 50% { transform: scale(1.02,.985) } }
+  }
+
+  /* ---------- party layer: drip, dots, floating bubbles, peeking monsters ---------- */
+  body { position: relative; overflow-x: hidden;
+    background-image: radial-gradient(circle, rgba(155,93,229,.13) 1.6px, transparent 2px), radial-gradient(circle, rgba(255,95,162,.12) 1.6px, transparent 2px);
+    background-size: 28px 28px, 28px 28px; background-position: 0 0, 14px 14px; }
+  #fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .wrap { position: relative; z-index: 1; }
+  .drip-top { position: absolute; top: 0; left: 0; width: 100%; height: 64px; z-index: 0; pointer-events: none; }
+  #fxTop { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
+  header { padding-top: 56px; }
+  h1.rainbow { font-size: clamp(36px, 10vw, 56px); }
+  h1.rainbow span { display: inline-block; }
+  h1.rainbow span { margin-right: .025em; }
+  h1.rainbow .sp { width: .32em; }
+  h1.rainbow span:nth-child(6n+1) { color: var(--pink); }
+  h1.rainbow span:nth-child(6n+2) { color: #ff9f1c; }
+  h1.rainbow span:nth-child(6n+3) { color: #f2b705; }
+  h1.rainbow span:nth-child(6n+4) { color: #22b98f; }
+  h1.rainbow span:nth-child(6n+5) { color: #2b9fe0; }
+  h1.rainbow span:nth-child(6n+6) { color: var(--purple); }
+  h1.rainbow { text-shadow: -1px -1px 0 var(--ink), 1px -1px 0 var(--ink), -1px 1px 0 var(--ink), 1px 1px 0 var(--ink), 0 -1px 0 var(--ink), 0 1px 0 var(--ink), -1px 0 0 var(--ink), 1px 0 0 var(--ink), 3px 3px 0 var(--ink); }
+  .step:nth-of-type(6n+1) { box-shadow: 6px 6px 0 var(--pink); }
+  .step:nth-of-type(6n+2) { box-shadow: 6px 6px 0 var(--mint); }
+  .step:nth-of-type(6n+3) { box-shadow: 6px 6px 0 var(--sky); }
+  .step:nth-of-type(6n+4) { box-shadow: 6px 6px 0 var(--yellow); }
+  .step:nth-of-type(6n+5) { box-shadow: 6px 6px 0 var(--purple); }
+  .step:nth-of-type(6n+6) { box-shadow: 6px 6px 0 #ff9f1c; }
+  .step:nth-of-type(6n+1) .num { background: var(--pink); }
+  .step:nth-of-type(6n+2) .num { background: #22b98f; }
+  .step:nth-of-type(6n+3) .num { background: #2b9fe0; }
+  .step:nth-of-type(6n+4) .num { background: #f2a705; }
+  .step:nth-of-type(6n+5) .num { background: var(--purple); }
+  .step:nth-of-type(6n+6) .num { background: #ff7a1c; }
+  .num { border: 2px solid var(--ink); }
+  .preview { overflow: visible; }
+  .peek { position: absolute; z-index: 0; pointer-events: none; width: 124px; height: 124px; }
+  .peek.left { left: 0; top: 120px; }
+  .peek.right { right: 0; top: 230px; }
+  .pop { display: inline-block; }
+  @media (max-width: 480px) { .scent-badge { left: 102px; bottom: 8px; width: 38px; height: 38px; font-size: 21px; } .peek { width: 88px; height: 88px; } .preview { grid-template-columns: 130px 1fr; } .preview #jar { width: 130px; height: 125px; } .preview .pname { font-size: 23px; } .preview .price { font-size: 28px; } .step h2 { font-size: 23px; } }
+  @media (prefers-reduced-motion: no-preference) {
+    h1.rainbow span { animation: hop 2.4s ease-in-out infinite; }
+    @keyframes hop { 0%, 70%, 100% { transform: translateY(0) } 80% { transform: translateY(-7px) rotate(-4deg) } 90% { transform: translateY(0) rotate(2deg) } }
+    .peek.left { animation: peekL 9s ease-in-out infinite; }
+    .peek.right { animation: peekR 11s ease-in-out infinite 3s; }
+    @keyframes peekL { 0%, 100% { transform: translateX(-100%) rotate(90deg) } 12%, 40% { transform: translateX(-38%) rotate(90deg) } 26% { transform: translateX(-34%) rotate(80deg) } 52% { transform: translateX(-100%) rotate(90deg) } }
+    @keyframes peekR { 0%, 100% { transform: translateX(100%) rotate(-90deg) } 12%, 42% { transform: translateX(38%) rotate(-90deg) } 28% { transform: translateX(34%) rotate(-100deg) } 55% { transform: translateX(100%) rotate(-90deg) } }
+    @keyframes bob { 0%, 100% { transform: translateY(3px) } 50% { transform: translateY(0) } }
+    #jar.boing { animation: boing .45s ease-out; }
+    @keyframes boing { 0% { transform: scale(1,1) } 30% { transform: scale(1.12,.88) } 60% { transform: scale(.94,1.08) } 100% { transform: scale(1,1) } }
+    .pop.go { animation: popn .35s ease-out; }
+    .scent-badge.go { animation: scentIn .5s cubic-bezier(.3,1.6,.5,1); }
+    @keyframes scentIn { 0% { transform: scale(0) rotate(-30deg) } 100% { transform: scale(1) rotate(0) } }
+    @keyframes popn { 0% { transform: scale(1) } 40% { transform: scale(1.3) rotate(-4deg) } 100% { transform: scale(1) } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .peek.left { transform: translateX(-38%) rotate(90deg); }
+    .peek.right { transform: translateX(38%) rotate(-90deg); }
+  }
+
+  /* ---------- watercolor theme (matches jellybeanslime.com) ---------- */
+  :root { --bg: #fffdf8; --ink: #3b2a55; --pink: #ff6fa8; --purple: #8f6bff; --soft: #fff0f7; --display: "Grandstander", "Fredoka", system-ui, sans-serif; }
+  body { background: var(--bg) url("/watercolor-bg.jpg") center top / 100% auto repeat-y; }
+  #fx { display: none; }
+  .drip-top { height: 74px; opacity: .9; }
+  h1.rainbow { text-shadow: none; font-weight: 800; }
+  h1.rainbow span:nth-child(6n+1) { color: #ff5fa2; }
+  .test-banner { border: 0; background: #fff3b8; border-radius: 999px; }
+  .included { border: 2.5px solid #ffe27a; box-shadow: none; background: rgba(255,255,255,.85); }
+  .preview { background: rgba(255,255,255,.92); border: 3px solid #c9b3ff; box-shadow: 0 8px 24px rgba(143,107,255,.18);
+    border-radius: 34px 28px 36px 26px / 28px 36px 26px 34px; }
+  .step { background: rgba(255,255,255,.8); border: 3px solid #ffb3d1;
+    border-radius: 34px 28px 36px 26px / 28px 36px 26px 34px; box-shadow: 0 8px 24px rgba(143,107,255,.10) !important; }
+  .step:nth-of-type(6n+2) { border-color: #9feed3; }
+  .step:nth-of-type(6n+3) { border-color: #a8e6ff; }
+  .step:nth-of-type(6n+4) { border-color: #ffe27a; }
+  .step:nth-of-type(6n+5) { border-color: #c9b3ff; }
+  .step:nth-of-type(6n+6) { border-color: #ffc9a8; }
+  .num { border: 0; }
+  .opt > label, .addin { border: 2.5px solid #e2d6f7; background: #fff; }
+  .opt > input:checked + label { background: var(--soft); border-color: var(--pink); box-shadow: 0 3px 0 var(--pink); transform: none; }
+  .addin.on { border-color: var(--pink); box-shadow: 0 3px 0 var(--pink); }
+  .pill label { border: 2px solid #e2d6f7; }
+  .pill input:checked + label { background: var(--purple); border-color: var(--purple); }
+  input[type=text], input[type=email], select, textarea { border: 2.5px solid #e2d6f7; background: #fff; }
+  .ideas button { border: 2px dashed #c9b3ff; background: #fff; }
+  .warn { border: 2px dashed #c9b3ff; background: #fff; }
+  .agree { border: 2.5px dashed #ffd23f; }
+  button.send { border: 0; box-shadow: 0 5px 0 #e04d8b; font-weight: 700; }
+  button.send:active { transform: translateY(5px); }
+  .peek { filter: drop-shadow(0 6px 10px rgba(143,107,255,.25)); }
+  header > a img { width: 120px; height: auto; }
+
+  /* texture info buttons + included add-ins */
+  .opt > label { padding-right: 40px; }
+  .opt .inc { font-size: 12px !important; opacity: 1 !important; color: #1f8f6a; font-weight: 800; }
+  .info-btn { position: absolute; top: 9px; right: 9px; z-index: 2; width: 26px; height: 26px; padding: 0; border-radius: 50%;
+    border: 2px solid var(--purple); background: #fff; color: var(--purple); cursor: pointer;
+    font: italic 800 14px/1 Georgia, "Times New Roman", serif; display: grid; place-items: center; }
+  .info-btn:hover, .info-btn:focus-visible { background: var(--purple); color: #fff; outline: none; }
+  .addin.included { opacity: .5; background: #f4f1f8; box-shadow: none; border-radius: 16px; }
+  .addin.included .addin-head { cursor: not-allowed; }
+  .addin.included em { color: #1f8f6a; }
+  .info-pop { margin: auto; width: min(380px, calc(100vw - 32px)); border: 3px solid #c9b3ff; border-radius: 28px; padding: 22px 20px 20px; background: #fffdf8; color: var(--ink); text-align: center; }
+  .info-pop::backdrop { background: rgba(59,42,85,.45); }
+  .info-pop h3 { font-family: var(--display); font-weight: 800; font-size: 26px; margin: 0 28px 8px; color: var(--pink); }
+  .info-pop p { margin: 0; font-size: 16px; line-height: 1.5; }
+  .info-pop .info-inc { margin-top: 10px; font-size: 14px; font-weight: 800; color: #1f8f6a; }
+  .info-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: #f1eaff; color: var(--ink); font-size: 15px; cursor: pointer; }
+
+  .optional { font-family: var(--body); font-size: 13px; font-weight: 800; color: #1f8f6a; background: #e3f8ef; border-radius: 999px; padding: 3px 10px; margin-left: 4px; }
+  /* pop-ups stay centered on screen while open */
+  dialog[open] { position: fixed; inset: 0; margin: auto; height: fit-content; }
+  html:has(dialog[open]) { overflow: hidden; }
+  .example { position: relative; z-index: 3; margin: 18px auto 4px; max-width: 260px; text-align: center; }
+  .example img { display: block; width: 100%; height: auto; border-radius: 26px; border: 4px solid #fff; box-shadow: 0 8px 18px rgba(59,42,85,.18); transform: rotate(-2deg); }
+  .example figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; margin-top: 12px; line-height: 1.3; background: rgba(255,253,248,.92); border-radius: 18px; padding: 8px 12px; }
+  .example figcaption b { color: var(--pink); }
+</style>
+</head>
+<body>
+
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<canvas id="fxTop" aria-hidden="true"></canvas>
+<svg class="drip-top" viewBox="0 0 1200 74" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="rbw" x1="0" x2="1">
+      <stop offset="0" stop-color="#ff8fbf"/><stop offset=".25" stop-color="#ffbf80"/>
+      <stop offset=".45" stop-color="#ffe27a"/><stop offset=".65" stop-color="#8eeccb"/>
+      <stop offset=".82" stop-color="#7fdcff"/><stop offset="1" stop-color="#b892ff"/>
+    </linearGradient>
+    <filter id="paint" x="-5%" y="-20%" width="110%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="3" seed="4"/>
+      <feDisplacementMap in="SourceGraphic" scale="8"/>
+    </filter>
+  </defs>
+  <path filter="url(#paint)" fill="url(#rbw)" d="M0 0H1200V22c-30 0-34 40-60 40s-26-34-56-34-30 20-62 20-28-26-60-26-34 44-64 44-28-38-58-38-32 18-62 18-30-30-62-30-30 36-60 36-30-22-60-22-32 26-62 26-30-40-60-40-30 30-62 30-30-18-60-18-32 38-62 38-28-32-58-32-32 22-62 22-30-28-60-28-34 40-64 40-26-30-56-30-30 16-60 16-30-26-60-26V0z"/>
+</svg>
+<img class="peek left" src="/monster.png" alt="" aria-hidden="true">
+<img class="peek right" src="/monster.png" alt="" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="mrb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset=".35" stop-color="#ff8fc4"/><stop offset=".7" stop-color="#9ad8ff"/><stop offset="1" stop-color="#b48cff"/></linearGradient>
+    <linearGradient id="mgal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b48cff"/><stop offset=".6" stop-color="#7b5cff"/><stop offset="1" stop-color="#4cc9f0"/></linearGradient>
+    <linearGradient id="peekA" x1="0" y1="0" x2="1" y2="1"></linearGradient>
+    <linearGradient id="peekB" x1="0" y1="0" x2="1" y2="1"></linearGradient>
+    <g id="mbody">
+      <path d="M18 40 L22 10 L38 26 Q50 22 62 26 L78 10 L82 40 Q92 58 86 76 L86 88 Q82 94 78 88 L78 82 Q70 86 62 84 L62 94 Q58 100 54 94 L54 84 Q48 86 42 84 L42 90 Q38 96 34 90 L34 82 Q24 80 18 74 Q8 58 18 40 Z" stroke="#2d1b5a" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="36" cy="34" rx="8" ry="4" fill="#fff" opacity=".6"/>
+      <circle cx="38" cy="52" r="11" fill="#fff" stroke="#2d1b5a" stroke-width="2.5"/><circle cx="64" cy="52" r="11" fill="#fff" stroke="#2d1b5a" stroke-width="2.5"/>
+      <circle cx="38" cy="53" r="7" fill="#2d1b5a"/><circle cx="64" cy="53" r="7" fill="#2d1b5a"/>
+      <path d="M38 49.5l1 2.2 2.4.2-1.8 1.6.6 2.4-2.2-1.3-2.2 1.3.6-2.4-1.8-1.6 2.4-.2z" fill="#fff"/>
+      <path d="M64 49.5l1 2.2 2.4.2-1.8 1.6.6 2.4-2.2-1.3-2.2 1.3.6-2.4-1.8-1.6 2.4-.2z" fill="#fff"/>
+    </g>
+    <g id="monster" fill="url(#mrb)"><use href="#mbody"/></g>
+    <g id="monster2" fill="url(#mgal)"><use href="#mbody"/></g>
+  </defs>
+</svg>
+<div class="wrap">
+  <div class="test-banner" id="testBanner">🧪 Test version. Orders won't send yet.</div>
+
+  <header>
+    <a href="/" aria-label="Jellybean Slime home"><img src="/monster.png" alt="Jellybean Slime logo" width="96" height="96"></a>
+    <h1 class="rainbow" aria-label="Build your own slime"><span aria-hidden="true">B</span><span aria-hidden="true">u</span><span aria-hidden="true">i</span><span aria-hidden="true">l</span><span aria-hidden="true">d</span><span class="sp" aria-hidden="true"> </span><span aria-hidden="true">y</span><span aria-hidden="true">o</span><span aria-hidden="true">u</span><span aria-hidden="true">r</span><span class="sp" aria-hidden="true"> </span><span aria-hidden="true">o</span><span aria-hidden="true">w</span><span aria-hidden="true">n</span><span class="sp" aria-hidden="true"> </span><span aria-hidden="true">s</span><span aria-hidden="true">l</span><span aria-hidden="true">i</span><span aria-hidden="true">m</span><span aria-hidden="true">e</span></h1>
+    <p class="lede">Pick it, mix it, name it. We'll make it by hand in Lafayette, LA.</p>
+    <p class="included">🎁 Every order comes with activator, stickers &amp; a slime care card!</p>
+    <figure class="example">
+      <img src="/build-example.jpg" alt="A custom Christmas slime jar: half red, half green, packed with Mrs. Claus, mitten, Christmas tree, peppermint and snowflake charms" width="900" height="900" loading="lazy">
+      <figcaption><b>Made by a slimer like you!</b> 🎄<br>Half red, half green, loaded with Christmas charms.</figcaption>
+    </figure>
+  </header>
+
+  <div class="preview" aria-live="polite">
+    <span class="scent-badge" id="pScent" aria-hidden="true" hidden></span>
+    <svg id="jar" viewBox="6 14 140 134" role="img" aria-label="Preview of your slime jar"></svg>
+    <div class="info">
+      <div class="pname" id="pName">Your slime</div>
+      <div class="pdesc" id="pDesc"></div>
+      <div class="price"><span class="pop" id="pPrice">$12</span></div>
+    </div>
+  </div>
+
+  <form id="order" name="slime-orders" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+    <input type="hidden" name="form-name" value="slime-orders">
+    <p hidden><label>Leave empty <input name="bot-field" id="bot"></label></p>
+    <input type="hidden" name="summary" id="summaryField">
+
+    <div class="wrap">
+      <section class="step">
+        <h2><span class="num">1</span>Pick a base</h2>
+        <div class="opts" id="bases"></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">2</span>Deluxe texture <span class="optional">optional</span></h2>
+        <p class="hint">Want to make it fancy? Pick one for a little extra, or skip it.</p>
+        <div class="opts" id="deluxe"></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">3</span>Pick a color</h2>
+        <div class="swatches" id="colors"></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">4</span>Pick a scent</h2>
+        <p class="hint">Scents are free! Pick one or skip it.</p>
+        <div class="swatches" id="scents"></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">5</span>Add-ins</h2>
+        <p class="hint">Pick up to 5. Tap one to choose how much.</p>
+        <div class="addins" id="addins"></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">6</span>Glitter <span class="optional">free!</span></h2>
+        <p class="hint">Glitter is on us. Pick one, or go glitter-free.</p>
+        <div class="opts" id="glitters"></div>
+        <div id="glitterMore" hidden>
+          <div class="mini-label" style="margin-bottom:6px">Glitter color</div>
+          <div id="glitterColors"></div>
+          <div class="mini-label" style="margin:10px 0 6px">How much?</div>
+          <div id="glitterAmt"></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">7</span>Pre-mixed or mix it yourself?</h2>
+        <div class="opts" id="mix"></div>
+        <p class="hint" id="diyNote" style="margin:0" hidden></p>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">8</span>Name your slime</h2>
+        <p class="hint">We'll print it on your jar label!</p>
+        <div class="field">
+          <input type="text" id="slimeName" name="slime_name" maxlength="18" placeholder="Unicorn Burp" autocomplete="off">
+          <div class="count"><span id="nameCount">0</span>/18</div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2><span class="num">9</span>Your info</h2>
+        <div class="field">
+          <label for="custName">Your name</label>
+          <input type="text" id="custName" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="custEmail">Email</label>
+          <input type="email" id="custEmail" name="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="pickup">How do you want it?</label>
+          <select id="pickup" name="pickup">
+            <option value="local">Local pickup in Lafayette, LA (free)</option>
+            <option value="ship">Ship it to me, U.S. only (+$7 flat)</option>
+          </select>
+        </div>
+        <div class="field" id="addrField" hidden>
+          <label for="address">Mailing address</label>
+          <textarea id="address" name="address" autocomplete="street-address" placeholder="Street, city, state, ZIP"></textarea>
+          <p class="hint" style="margin:0">Flat $7 shipping anywhere in the U.S. (already in your total).</p>
+        </div>
+        <div class="field">
+          <label for="notes">Anything else? (optional)</label>
+          <textarea id="notes" name="notes" placeholder="It's a birthday gift! / Extra glittery please"></textarea>
+        </div>
+        <div class="agree">
+          <p><b>🧪 Heads up: custom slime is a fun experiment!</b> Every build-your-own slime is handmade from your picks. If you get a little wild with out-of-the-ordinary combos, the texture might come out different than you pictured (stickier, crunchier, softer, or just plain weird). That's part of the adventure, so custom slimes can't be returned or remade because of texture.</p>
+          <label><input type="checkbox" id="agreeBox" name="agreed-to-experiment" value="yes"> I get it! My custom slime is an experiment, and I'm okay taking a chance on a texture I might not love.</label>
+        </div>
+        <p class="err" id="err" hidden></p>
+        <button type="submit" class="send" id="sendBtn">Send my order request</button>
+        <p class="hint" style="margin:0;text-align:center" id="payHint">No payment yet. We'll email you to confirm and send a payment link.</p>
+      </section>
+    </div>
+  </form>
+
+  <section class="step done" id="done" hidden>
+    <h2 style="justify-content:center">You're on the slime list! 🫧</h2>
+    <p id="doneMsg" style="margin:0"></p>
+    <pre id="doneSummary"></pre>
+    <button class="again" id="again" type="button">Build another slime</button>
+  </section>
+
+  <footer>
+    Slime is not food. Ages 3+. Adult supervision recommended.<br>
+    Questions? support@jellybeanslime.com
+  </footer>
+</div>
+
+<dialog class="info-pop" id="infoPop" aria-labelledby="infoTitle">
+  <button type="button" class="info-close" id="infoClose" aria-label="Close">✕</button>
+  <h3 id="infoTitle"></h3>
+  <p id="infoText"></p>
+  <p class="info-inc" id="infoInc" hidden></p>
+</dialog>
+
+<script>
+  // ---- menu: edit names and prices here ----
+  // look = how the jar preview draws it
+  const BASES = [
+    { id: "butter", name: "Butter", desc: "soft & spreadable",    price: 12, look: "solid",
+      info: "Soft clay kneaded in for a buttery, spreadable feel. Zero mess, total comfort. The best place to start." },
+    { id: "cloud",  name: "Cloud",  desc: "fluffy & drizzly",     price: 12, look: "cloud",
+      info: "Made with instant snow, so it's fluffy, stretchy and drizzles like a cloud when you pull it." },
+    { id: "glossy", name: "Glossy", desc: "shiny & poppy",        price: 12, look: "glossy",
+      info: "High shine and stretchy. Fold it, trap the air, and pop those bubbles for loud clicks." },
+    { id: "clear",  name: "Clear",  desc: "see-through & bubbly", price: 12, look: "clear",
+      info: "Glass-clear and showing off every glitter and charm. A little tacky, totally worth it." },
+  ];
+  // optional deluxe textures (pick one or skip). includes = add-ins already in it; look = changes the jar drawing
+  const DELUXE = [
+    { id: "none",       name: "No deluxe texture", desc: "just my base",           price: 0 },
+    { id: "perlite",    name: "Perlite",      desc: "crisp & crackly",            price: 1, includes: ["perlite"],
+      info: "Tiny volcanic pebbles (yes, the ones in garden soil) for a crisp, crackly crunch." },
+    { id: "bingsu",     name: "Bingsu",       desc: "extra crunchy",              price: 2, includes: ["bingsu"],
+      info: "Slime packed with tiny bingsu beads for that crunchy, crackly texture slime fans live for. With so many beads, pull it slow!" },
+    { id: "pumice",     name: "Pumice",       desc: "smooth & sizzly",            price: 2, grit: true,
+      info: "The stone from your shower, ground up. The result? A super sizzly slime: smooth with a little grit." },
+    { id: "frosting",   name: "Frosting",     desc: "thick & whipped",            price: 1, look: "solid",
+      info: "Thick and whipped with a heavier, denser feel in your hands. It holds every swirl you give it." },
+    { id: "cloud",      name: "Cloud",        desc: "fluffy & drizzly",           price: 1, look: "cloud",
+      info: "Instant snow mixed in for a fluffy, stretchy slime that drizzles like a cloud when you pull it." },
+    { id: "clouddough", name: "Cloud Dough",  desc: "soft & doughy",              price: 1, look: "cloud",
+      info: "Made with instant snow, so it pulls apart in soft, airy clumps. A cloud you can actually hold." },
+    { id: "foamcrunch", name: "Foam Crunch",  desc: "dense & micro foam packed",  price: 2, includes: ["foam"],
+      info: "A dense slime packed full of micro foam beads. Every squeeze is a crunchy little burst of sound." },
+  ];
+  // one simple palette for the slime and every add-in. hex = main color, c2 = lighter highlight
+  const PALETTE = [
+    { id: "pink",   name: "Pink",   hex: "#ff5fa2", c2: "#ffc2df" },
+    { id: "red",    name: "Red",    hex: "#ef3b4f", c2: "#ffb3bc" },
+    { id: "orange", name: "Orange", hex: "#ff8c2e", c2: "#ffd2a8" },
+    { id: "yellow", name: "Yellow", hex: "#ffd23f", c2: "#fff0a8" },
+    { id: "green",  name: "Green",  hex: "#3ddb7a", c2: "#b5f5cc" },
+    { id: "blue",   name: "Blue",   hex: "#3aa7f0", c2: "#a9dcff" },
+    { id: "purple", name: "Purple", hex: "#9b5de5", c2: "#d4baff" },
+    { id: "white",  name: "White",  hex: "#e8eefa", c2: "#ffffff" },
+  ];
+  const COLORS = PALETTE.map((p) => ({ ...p, c1: p.hex }));
+  const SPARKLE = PALETTE.map((p) => ({ ...p, hex: p.id === "white" ? "#ffffff" : p.hex }));
+  const HOLO = SPARKLE;
+  const SCENTS = [
+    { id: "none",       name: "No scent",     icon: "🤍", c2: "#eef0f6", price: 0 },
+    { id: "cottoncandy",name: "Cotton candy", icon: "🍭", c2: "#ffd1ea", price: 0 },
+    { id: "strawberry", name: "Strawberry",   icon: "🍓", c2: "#ffc9cf", price: 0 },
+    { id: "bubblegum",  name: "Bubblegum",    icon: "🫧", c2: "#ffd6f0", price: 0 },
+    { id: "cake",       name: "Birthday cake",icon: "🎂", c2: "#fff0c9", price: 0 },
+    { id: "watermelon", name: "Watermelon",   icon: "🍉", c2: "#c9f5d6", price: 0 },
+    { id: "vanilla",    name: "Vanilla",      icon: "🍦", c2: "#fff6dc", price: 0 },
+    { id: "lavender",   name: "Lavender",     icon: "🪻", c2: "#e6d9ff", price: 0 },
+    { id: "linen",      name: "Fresh linen",  icon: "🧺", c2: "#d9f0ff", price: 0 },
+  ];
+  // extra prices on top of the add-in's starting price (glitter extras are free)
+  const EXTRA = {
+    normal: { xtra: 0.5, xtra2: 1 },
+    free:   { xtra: 0,   xtra2: 0 },
+  };
+  const AMOUNTS = [
+    { id: "reg",   name: "Regular" },
+    { id: "xtra",  name: "Xtra" },
+    { id: "xtra2", name: "Xtra Xtra" },
+  ];
+  const ADDINS = [
+    { id: "foam",    name: "Foam beads",   desc: "crunchy little balls", price: 1, extra: "normal" },
+    { id: "bingsu",  name: "Bingsu beads", desc: "extra crunchy", price: 1, extra: "normal", colors: SPARKLE },
+    { id: "jelly",   name: "Jelly cubes",  desc: "soft squishy cubes", price: 1, extra: "normal" },
+    { id: "perlite", name: "Perlite",      desc: "crisp little pebbles", price: 1, extra: "normal" },
+    { id: "clay",    name: "Clay topper",  desc: "soft swirl on top", price: 1, extra: "normal" },
+    { id: "charms",  name: "Charms",       desc: "cute little toppers · ages 3+", price: 1, charms: true },
+  ];
+  const GLITTERS = [
+    { id: "none",    name: "No glitter",  desc: "keep it simple" },
+    { id: "glitter", name: "Glitter",     desc: "classic sparkle", tag: "free" },
+    { id: "holo",    name: "Holographic", desc: "rainbow shimmer", tag: "free" },
+  ];
+  const MIX = [
+    { id: "premixed", name: "Pre-mixed", desc: "ready to play", tag: "free" },
+    { id: "diy",      name: "Mix it yourself", desc: "slime kit style · add-ins on the side", tag: "free" },
+  ];
+  // mix-it-yourself fee estimate by number of add-ins (final amount agreed by email)
+  const diyFee = (n) => 0; // mixing yourself is free now
+  const CHARM_IDEAS = ["Strawberries 🍓", "Hearts", "Stars", "Rainbows", "Bows", "Flowers", "Clouds", "Mushrooms", "Bears", "Holiday"];
+  const MAX_ADDINS = 5;
+  const SIZE = "6 oz";
+  const SHIPPING = 7; // flat U.S. shipping; pickup is free
+  // -------------------------------------------
+
+  const $ = (s) => document.querySelector(s);
+  const money = (n) => "$" + (n % 1 ? n.toFixed(2) : n.toFixed(0));
+
+  function card(group, item, checked) {
+    const id = group + "-" + item.id;
+    const extra = item.tag || (item.price ? (group === "base" ? money(item.price) : "+" + money(item.price)) : "");
+    return `<div class="opt"><input type="radio" name="${group}" id="${id}" value="${item.id}" ${checked ? "checked" : ""}>
+      <label for="${id}"><b>${item.name}</b><span>${item.desc}</span>${item.includes ? `<span class="inc">✓ ${item.includes.map((x) => ADDINS.find((a) => a.id === x).name.toLowerCase()).join(", ")} included</span>` : ""}${extra ? `<em>${extra}</em>` : ""}</label>
+      ${item.info ? `<button type="button" class="info-btn" data-info="${item.id}" aria-label="More about ${item.name}">i</button>` : ""}</div>`;
+  }
+  function pills(name, items, priceFn, chips) {
+    return `<div class="pills">${items.map((it, i) => {
+      const id = name + "-" + it.id;
+      const p = priceFn ? priceFn(it) : "";
+      const bg = it.rainbow ? `conic-gradient(${it.rainbow.join(",")},${it.rainbow[0]})` : it.hex;
+      return `<span class="pill"><input type="radio" name="${name}" id="${id}" value="${it.id}" ${i === 0 ? "checked" : ""}>
+        <label for="${id}">${chips ? `<span class="chip" style="background:${bg}"></span>` : ""}${it.name}${p}</label></span>`;
+    }).join("")}</div>`;
+  }
+
+  $("#bases").innerHTML = BASES.map((b, i) => card("base", b, i === 0)).join("");
+  $("#mix").innerHTML = MIX.map((m, i) => card("mix", m, i === 0)).join("");
+  $("#deluxe").innerHTML = DELUXE.map((d, i) => card("deluxe", d, i === 0)).join("");
+  $("#glitters").innerHTML = GLITTERS.map((g, i) => card("glitter", g, i === 0)).join("");
+  $("#glitterColors").innerHTML = pills("gcol", SPARKLE, null, true);
+  $("#glitterAmt").innerHTML = pills("gamt", AMOUNTS, null);
+  $("#scents").innerHTML = SCENTS.map((c, i) => `<div class="sw"><input type="radio" name="scent" id="scent-${c.id}" value="${c.id}" ${i === 0 ? "checked" : ""}>
+    <label for="scent-${c.id}"><span class="dot emo" style="--c2:${c.c2}" aria-hidden="true">${c.icon}</span>${c.name}</label></div>`).join("");
+  $("#colors").innerHTML = COLORS.map((c, i) => `<div class="sw"><input type="radio" name="color" id="color-${c.id}" value="${c.id}" ${i === 0 ? "checked" : ""}>
+    <label for="color-${c.id}"><span class="dot${c.pearl ? " pearl" : ""}" style="--c1:${c.c1};--c2:${c.c2}"></span>${c.name}</label></div>`).join("");
+  $("#addins").innerHTML = ADDINS.map((a) => `
+    <div class="addin" id="row-${a.id}">
+      <label class="addin-head" for="add-${a.id}">
+        <input type="checkbox" name="addin" id="add-${a.id}" value="${a.id}">
+        <span class="t"><b>${a.name}</b><span>${a.desc}</span></span><em id="tag-${a.id}">+${money(a.price)}</em>
+      </label>
+      <div class="addin-more" id="more-${a.id}" hidden>
+        ${a.charms ? `
+        <label class="mini-label" for="charmWish">What kind of charms do you want?</label>
+        <input type="text" id="charmWish" name="charm_wish" maxlength="80" placeholder="Type your charm idea">
+        <div class="ideas" id="charmIdeas"></div>
+        <p class="hint" style="margin:0">We'll confirm your charms by email after you order.</p>
+        <div class="warn">⚠️ WARNING: CHOKING HAZARD. Small parts. Not for children under 3 yrs.</div>` : `
+        <div class="mini-label">How much?</div>
+        ${pills("amt-" + a.id, AMOUNTS, (m) => m.id === "reg" ? "" : a.extra === "free" ? " (free)" : ` +${money(EXTRA[a.extra][m.id])}`)}`}
+        ${a.colors ? `<div class="mini-label">Color</div>${pills("col-" + a.id, a.colors, null, true)}` : ""}
+      </div>
+    </div>`).join("");
+  $("#charmIdeas").innerHTML = CHARM_IDEAS.map((t) => `<button type="button">${t}</button>`).join("");
+  $("#charmIdeas").addEventListener("click", (e) => {
+    if (e.target.tagName !== "BUTTON") return;
+    const f = $("#charmWish");
+    const word = e.target.textContent.replace(/\s*\p{Extended_Pictographic}/gu, "").trim();
+    f.value = f.value ? (f.value + ", " + word).slice(0, 80) : word;
+    render();
+  });
+
+  const pick = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value;
+
+  // ⓘ buttons: tell people about each texture
+  const infoPop = $("#infoPop");
+  const showInfo = (list) => (e) => {
+    const btn = e.target.closest(".info-btn");
+    if (!btn) return;
+    e.preventDefault();
+    const b = list.find((x) => x.id === btn.dataset.info);
+    $("#infoTitle").textContent = b.name;
+    $("#infoText").textContent = b.info;
+    $("#infoInc").hidden = !b.includes;
+    $("#infoInc").textContent = b.includes ? "Comes with " + b.includes.map((x) => ADDINS.find((a) => a.id === x).name.toLowerCase()).join(", ") + " already mixed in!" : "";
+    infoPop.showModal();
+  };
+  $("#bases").addEventListener("click", showInfo(BASES));
+  $("#deluxe").addEventListener("click", showInfo(DELUXE));
+  $("#infoClose").addEventListener("click", () => infoPop.close());
+  infoPop.addEventListener("click", (e) => { if (e.target === infoPop) infoPop.close(); });
+
+  function state() {
+    const base = BASES.find((b) => b.id === pick("base"));
+    const color = COLORS.find((c) => c.id === pick("color"));
+    const scent = SCENTS.find((c) => c.id === pick("scent"));
+    const deluxe = DELUXE.find((d) => d.id === pick("deluxe")) || DELUXE[0];
+    (deluxe.includes || []).forEach((id) => { const el = document.getElementById("add-" + id); if (el) el.checked = false; });
+    const gType = pick("glitter") || "none";
+    const gCol = SPARKLE.find((c) => c.id === pick("gcol")) || SPARKLE[0];
+    const gAmt = AMOUNTS.find((m) => m.id === pick("gamt")) || AMOUNTS[0];
+    const glitter = gType === "none" ? null : { ...GLITTERS.find((g) => g.id === gType), amt: gAmt, col: gCol, cost: 0 };
+    const addins = [...document.querySelectorAll("input[name=addin]:checked")].map((el) => {
+      const a = ADDINS.find((x) => x.id === el.value);
+      const amt = AMOUNTS.find((m) => m.id === pick("amt-" + a.id)) || AMOUNTS[0];
+      const col = a.colors ? a.colors.find((c) => c.id === pick("col-" + a.id)) : null;
+      const cost = a.price + (amt.id === "reg" ? 0 : EXTRA[a.extra][amt.id]);
+      return { ...a, amt, col, cost };
+    });
+    const mix = MIX.find((m) => m.id === pick("mix"));
+    const fee = mix.id === "diy" ? diyFee(addins.length) : 0;
+    const charms = addins.some((a) => a.id === "charms");
+    const name = $("#slimeName").value.trim();
+    const ship = $("#pickup").value === "ship" ? SHIPPING : 0;
+    const total = base.price + deluxe.price + scent.price + addins.reduce((s, a) => s + a.cost, 0) + fee + ship;
+    const col0 = SPARKLE.find((c) => c.id === color.id);
+    const built = (deluxe.includes || []).map((id) => ({ ...ADDINS.find((x) => x.id === id), amt: AMOUNTS[1], col: col0, cost: 0, builtIn: true }));
+    const look = deluxe.look || base.look;
+    return { base, deluxe, look, glitter, color, scent, addins, built, mix, fee, charms, name, ship, total };
+  }
+
+  // ---------- the jar drawing ("Big hug" monster jar) ----------
+  // little seeded random so toppings stay put between taps
+  function rng(seed) { let s = seed; return () => (s = (s * 9301 + 49297) % 233280) / 233280; }
+  const INK = "#2d1b5a";
+
+  // darker shade of a hex color for shadows
+  function darker(hex, f = 0.78) {
+    const n = parseInt(hex.slice(1), 16);
+    const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v * f));
+    return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+  }
+
+  function defs(c) {
+    const c3 = darker(c.c1);
+    return `<defs>
+      ${c.pearl ? `
+      <linearGradient id="g-dome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf2"/><stop offset=".25" stop-color="#ffe3f1"/><stop offset=".45" stop-color="#f6efe2"/><stop offset=".65" stop-color="#ddecff"/><stop offset=".82" stop-color="#ece0ff"/><stop offset="1" stop-color="#e6dccb"/></linearGradient>
+      <linearGradient id="g-body" x1="0" y1="0" x2="1" y2=".6"><stop offset="0" stop-color="#e6dccb"/><stop offset=".2" stop-color="#ffe6f2"/><stop offset=".45" stop-color="#f7f0e4"/><stop offset=".7" stop-color="#e0eeff"/><stop offset=".88" stop-color="#efe3ff"/><stop offset="1" stop-color="#ddd2c0"/></linearGradient>` : `
+      <radialGradient id="g-dome" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="${c.c2}"/><stop offset=".55" stop-color="${c.c1}"/><stop offset="1" stop-color="${c3}"/></radialGradient>
+      <linearGradient id="g-body" x1="0" x2="1"><stop offset="0" stop-color="${c3}"/><stop offset=".3" stop-color="${c.c1}"/><stop offset=".7" stop-color="${c.c1}"/><stop offset="1" stop-color="${c3}"/></linearGradient>`}
+      <radialGradient id="g-pearl" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#f1ecf7"/><stop offset="1" stop-color="#c9c1d6"/></radialGradient>
+      <radialGradient id="g-cream" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#fffdf8"/><stop offset="1" stop-color="#f3e3cf"/></radialGradient>
+      <filter id="g-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+    </defs>`;
+  }
+
+  const star = (x, y, r, f, stroke) =>
+    `<path d="M${x} ${y - r}L${x + r * .35} ${y - r * .35}L${x + r} ${y}L${x + r * .35} ${y + r * .35}L${x} ${y + r}L${x - r * .35} ${y + r * .35}L${x - r} ${y}L${x - r * .35} ${y - r * .35}Z" fill="${f}" ${stroke ? `stroke="${stroke}" stroke-width=".6"` : ""}/>`;
+
+  // evenly spread points over an area (sunflower spiral + a little jitter)
+  function spread(n, A, seed, fn) {
+    const r = rng(seed), rot = r() * 6.28;
+    let o = "";
+    for (let i = 0; i < n; i++) {
+      const d = Math.sqrt((i + .5) / n), t = i * 2.39996 + rot + (r() - .5) * .5;
+      o += fn(+(A.cx + Math.cos(t) * A.rx * d).toFixed(1), +(A.cy + Math.sin(t) * A.ry * d).toFixed(1), i, r);
+    }
+    return o;
+  }
+
+  function toppings(s, A, small) {
+    let o = "";
+    s.addins.forEach((a, ai) => {
+      if (a.id === "clay") return;
+      const many = { reg: 1, xtra: 1.5, xtra2: 2.1 }[a.amt.id];
+      const k = small ? 0.45 : 1;
+      const seed = 5 + ai * 7;
+      if (a.id === "foam")
+        o += spread(Math.round(14 * many * k), A, seed, (x, y, i) =>
+          `<circle cx="${x}" cy="${y}" r="${small ? 2.2 : 3.3}" fill="${[s.color.c2, "#ffffff", "#ffe08a"][i % 3]}" stroke="${INK}" stroke-opacity=".25" stroke-width=".6"/><circle cx="${x - .9}" cy="${y - 1.1}" r="1" fill="#fff"/>`);
+      if (a.id === "bingsu")
+        o += spread(Math.round(16 * many * k), A, seed, (x, y, i, r) =>
+          `<rect x="${x - 1.8}" y="${y - 2.6}" width="3.6" height="5.2" rx=".8" fill="${a.col.hex}" fill-opacity=".75" stroke="#fff" stroke-width=".8" transform="rotate(${Math.round(r() * 180)} ${x} ${y})"/>`);
+      if (a.id === "perlite")
+        o += spread(Math.round(14 * many * k), A, seed + 3, (x, y, i, r) =>
+          `<path d="M${x - 2.8} ${y}l1.8 -2.5l2.6 .4l1.5 2.4l-1.3 2.4l-2.9 .3Z" fill="#fbfaf6" stroke="#8f877b" stroke-width=".7" transform="rotate(${Math.round(r() * 360)} ${x} ${y})"/>`);
+      if (a.id === "jelly")
+        o += spread(Math.round(7 * many * k), A, seed + 1, (x, y, i, r) =>
+          `<rect x="${x - 3.6}" y="${y - 3.6}" width="7.2" height="7.2" rx="2" fill="${[s.color.c2, "#ffffff", "#bfe9ff"][i % 3]}" fill-opacity=".85" stroke="${INK}" stroke-opacity=".25" stroke-width=".6" transform="rotate(${Math.round(r() * 40 - 20)} ${x} ${y})"/><rect x="${x - 2.4}" y="${y - 2.6}" width="2.2" height="1.2" rx=".6" fill="#fff"/>`);
+      if (a.id === "glitter")
+        o += spread(Math.round(20 * many * k), A, seed, (x, y) => star(x, y, 2, a.col.hex, a.col.id === "white" ? "#c9c1d6" : ""));
+      if (a.id === "holo")
+        o += spread(Math.round(20 * many * k), A, seed, (x, y, i) => star(x, y, 2.3, [a.col.hex, a.col.c2, "#ffffff"][i % 3], "#c9c1d6"));
+    });
+    return o;
+  }
+
+  // clay topper: big soft-serve swirl
+  function clayTopper(x, y, sc = 1) {
+    const f = "url(#g-cream)", sh = "#e6cfb3";
+    return `<g transform="translate(${x} ${y}) scale(${sc})">
+      <ellipse cx="0" cy="1" rx="17" ry="7" fill="${sh}"/><ellipse cx="0" cy="0" rx="17" ry="7" fill="${f}"/>
+      <ellipse cx="1" cy="-7" rx="13" ry="6" fill="${sh}"/><ellipse cx="1" cy="-8" rx="13" ry="6" fill="${f}"/>
+      <ellipse cx="0" cy="-14" rx="8.5" ry="4.5" fill="${sh}"/><ellipse cx="0" cy="-15" rx="8.5" ry="4.5" fill="${f}"/>
+      <path d="M0 -19 q3 -4 0 -7" fill="none" stroke="${sh}" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="-6" cy="-2" rx="5" ry="1.6" fill="#fff" opacity=".8"/></g>`;
+  }
+
+  function strawberry(x, y, sc = 1.35) {
+    return `<g transform="translate(${x} ${y}) scale(${sc})"><path d="M0 -6C7 -6 9 0 6 5C4 9 1 11 0 11C-1 11-4 9-6 5C-9 0-7-6 0-6Z" fill="#e8344e"/><path d="M-5 -6L-2 -9L0 -6L2 -9L5 -6L0 -4Z" fill="#3ddb7a"/><circle cx="-2.5" cy="0" r=".9" fill="#fff"/><circle cx="2.5" cy="1" r=".9" fill="#fff"/><circle cx="0" cy="4.5" r=".9" fill="#fff"/><ellipse cx="-2" cy="-2" rx="2" ry="1.2" fill="#fff" opacity=".5"/></g>`;
+  }
+
+  const RINGS = [[70, 66, 44, 11], [70, 56, 38, 11], [72, 46, 30, 10], [69, 37, 21, 9], [72, 29, 11, 7]];
+
+  function slimeTop(base, c) {
+    const c3 = darker(c.c1);
+    let o = "";
+    if (base === "cloud") {
+      const r = rng(7), L = [];
+      for (let i = 0; i < 28; i++) {
+        const a = Math.PI * (.05 + .9 * r()), d = .45 + .55 * r();
+        L.push([70 + Math.cos(a) * 36 * d, 64 - Math.sin(a) * 30 * d, 7 + r() * 6]);
+      }
+      L.sort((p, q) => p[1] - q[1]);
+      o += `<path d="M26 70Q24 44 44 34Q70 22 96 34Q116 44 114 70Z" fill="url(#g-dome)"/>`;
+      o += L.map(([x, y, rd]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rd.toFixed(1)}" fill="url(#g-dome)"/>`).join("");
+      const q = rng(4);
+      for (let i = 0; i < 90; i++) o += `<circle cx="${(30 + q() * 80).toFixed(1)}" cy="${(30 + q() * 38).toFixed(1)}" r="${(.6 + q() * .8).toFixed(1)}" fill="#fff" opacity=".8"/>`;
+      return o;
+    }
+    const clear = base === "clear", glossy = base === "glossy";
+    RINGS.forEach(([x, y, rx, ry]) => {
+      if (clear) {
+        // see-through: faint tint, a thin rim and bright glints so you can see the shape
+        o += `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c.c2}" fill-opacity=".22" stroke="${c3}" stroke-opacity=".45" stroke-width="1.2"/>
+          <path d="M${x - rx * .75} ${y - ry * .3} Q${x - rx * .2} ${y - ry * .95} ${x + rx * .4} ${y - ry * .75}" fill="none" stroke="#fff" stroke-width="${rx > 20 ? 2.4 : 1.6}" stroke-linecap="round"/>
+          <path d="M${x - rx * .6} ${y + ry * .55} Q${x} ${y + ry * .95} ${x + rx * .6} ${y + ry * .55}" fill="none" stroke="${c3}" stroke-opacity=".3" stroke-width="1"/>`;
+      } else {
+        o += `<ellipse cx="${x}" cy="${y + 2}" rx="${rx}" ry="${ry}" fill="${c3}" opacity=".6"/>
+          <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="url(#g-dome)"/>`;
+        if (glossy) o += `<path d="M${x - rx * .78} ${y - ry * .25} Q${x - rx * .25} ${y - ry * 1} ${x + rx * .4} ${y - ry * .82}" fill="none" stroke="#fff" stroke-width="${rx > 20 ? 3.2 : 2.2}" stroke-linecap="round"/>
+          <path d="M${x + rx * .55} ${y - ry * .55} Q${x + rx * .75} ${y - ry * .3} ${x + rx * .8} ${y}" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+          <path d="M${x - rx * .5} ${y + ry * .5} Q${x} ${y + ry * .85} ${x + rx * .45} ${y + ry * .5}" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>`;
+      }
+    });
+    if (glossy) o += star(52, 40, 3.2, "#fff") + star(92, 54, 2.4, "#fff") + star(80, 30, 2, "#fff");
+    if (clear) o += `<circle cx="60" cy="58" r="2" fill="none" stroke="#fff" stroke-width="1"/><circle cx="84" cy="48" r="1.5" fill="none" stroke="#fff" stroke-width="1"/><circle cx="76" cy="64" r="1.2" fill="none" stroke="#fff" stroke-width="1"/>`;
+    return o;
+  }
+
+  function jar(s) {
+    const c = s.color, base = s.look, clear = base === "clear", c3 = darker(c.c1);
+    const diy = s.mix.id === "diy";
+    const body = "M28 70L32 136Q32 141 38 141L102 141Q108 141 108 136L112 70Z";
+    // clear slime: you see right through the jar; everything else is solid color
+    const bodyFill = clear ? `fill="${c.c2}" fill-opacity=".25"` : `fill="url(#g-body)"`;
+    const part = clear ? `fill="${c.c2}" fill-opacity=".55" stroke="${c3}" stroke-opacity=".5" stroke-width="1"` : `fill="url(#g-dome)"`;
+    let o = defs(c);
+    o += `<ellipse cx="70" cy="144" rx="44" ry="5" fill="${INK}" opacity=".1"/><ellipse cx="70" cy="144" rx="34" ry="3.5" fill="${INK}" opacity=".08"/>`;
+    o += `<path d="${body}" ${bodyFill} ${clear ? `stroke="${c3}" stroke-opacity=".5" stroke-width="1.5"` : ""}/>
+      <path d="${body}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+      <rect x="35" y="76" width="5" height="58" rx="2.5" fill="#fff" opacity="${clear ? .8 : .45}"/>`;
+    if (clear) o += `<circle cx="88" cy="128" r="2.2" fill="none" stroke="#fff" stroke-width="1"/><circle cx="50" cy="90" r="1.6" fill="none" stroke="#fff" stroke-width="1"/>`;
+    // happy closed eyes, blush, little open mouth
+    o += `<path d="M48 104 Q55 96 62 104" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M78 104 Q85 96 92 104" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="46" cy="112" rx="5" ry="2.8" fill="#ff5fa2" opacity=".35"/><ellipse cx="94" cy="112" rx="5" ry="2.8" fill="#ff5fa2" opacity=".35"/>
+      <ellipse cx="70" cy="115" rx="4" ry="3.2" fill="${INK}"/><ellipse cx="70" cy="116.5" rx="2.2" ry="1.4" fill="#ff7a9a"/>`;
+    // hugging arms + monster ears
+    o += `<path d="M26 106 Q16 112 22 120 Q30 124 36 116" ${part}/><path d="M114 106 Q124 112 118 120 Q110 124 104 116" ${part}/>
+      <path d="M32 92 L16 66 L46 78 Z" ${part}/><path d="M108 92 L124 66 L94 78 Z" ${part}/>
+      <path d="M30 84 L22 71 L37 77Z" fill="#fff" opacity=".4"/><path d="M110 84 L118 71 L103 77Z" fill="#fff" opacity=".25"/>`;
+    // rim + drips
+    o += `<ellipse cx="70" cy="70" rx="42" ry="5" fill="${c.c2}" ${clear ? `fill-opacity=".5" stroke="${c3}" stroke-opacity=".4" stroke-width="1"` : ""}/>
+      <path d="M30 70Q31 84 36 84Q41 84 41 74Z M58 72Q58 90 64 90Q70 90 70 72Z M90 72Q90 80 95 80Q100 80 100 71Z" ${part}/>
+      <ellipse cx="35" cy="80" rx="1.4" ry="2.5" fill="#fff" opacity=".7"/><ellipse cx="63" cy="85" rx="1.6" ry="3" fill="#fff" opacity=".7"/>`;
+    o += slimeTop(base, c);
+    const area = base === "cloud" ? { cx: 70, cy: 47, rx: 36, ry: 18 } : { cx: 70, cy: 48, rx: 36, ry: 19 };
+    const hasClay = s.addins.some((a) => a.id === "clay");
+    o += toppings({ ...s, addins: s.built }, area, false);
+    if (s.deluxe.grit) o += spread(40, area, 3, (x, y, i) => `<circle cx="${x}" cy="${y}" r=".8" fill="${["#8a7f73", "#b8ada0", "#ffffff"][i % 3]}" opacity=".8"/>`);
+    if (s.glitter) o += toppings({ ...s, addins: [s.glitter] }, area, false);
+    if (!diy) {
+      o += toppings(s, area, false);
+      if (hasClay) o += clayTopper(88, area.cy - 6);
+    }
+    if (s.charms) o += strawberry(52, area.cy - 10);
+    // mix it yourself: add-ins come in a little side cup
+    if (diy && s.addins.length) {
+      o += `<path d="M118 118 L120 140 Q120 142 123 142 L137 142 Q140 142 140 140 L142 118 Z" fill="#fff" fill-opacity=".9" stroke="${INK}" stroke-opacity=".35" stroke-width="1.4"/>
+        <ellipse cx="130" cy="118" rx="12" ry="3" fill="#fff" stroke="${INK}" stroke-opacity=".35" stroke-width="1.2"/>`;
+      o += toppings(s, { cx: 130, cy: 124, rx: 8, ry: 4 }, true);
+      if (hasClay) o += clayTopper(130, 120, .45);
+    }
+    return o;
+  }
+
+  function render() {
+    const s = state();
+    $("#jar").innerHTML = jar(s);
+    $("#pName").textContent = s.name || "Your slime";
+    const parts = [s.base.name, ...(s.deluxe.id !== "none" ? [s.deluxe.name.toLowerCase()] : []), s.color.name, ...(s.scent.id !== "none" ? [s.scent.name + " scent"] : []),
+      ...s.addins.map((a) => (a.col ? a.col.name + " " : "") + a.name.toLowerCase() + (a.amt.id !== "reg" ? " (" + a.amt.name + ")" : ""))];
+    if (s.glitter) parts.push(s.glitter.col.name.toLowerCase() + " " + (s.glitter.id === "holo" ? "holo glitter" : "glitter") + (s.glitter.amt.id !== "reg" ? " (" + s.glitter.amt.name + ")" : ""));
+    if (s.mix.id === "diy") parts.push("mix yourself");
+    if (s.ship) parts.push("$7 shipping");
+    $("#pDesc").textContent = parts.join(" · ") + " · " + SIZE;
+    const badge = $("#pScent");
+    if (badge.dataset.id !== s.scent.id) {
+      badge.dataset.id = s.scent.id;
+      badge.textContent = s.scent.icon;
+      badge.hidden = s.scent.id === "none";
+      badge.classList.remove("go"); void badge.offsetWidth; badge.classList.add("go");
+    }
+    $("#pPrice").textContent = money(s.total);
+    $("#glitterMore").hidden = !s.glitter;
+    $("#nameCount").textContent = $("#slimeName").value.length;
+    $("#addrField").hidden = $("#pickup").value !== "ship";
+    $("#diyNote").hidden = true;
+    $("#diyNote").textContent = `Mix-it-yourself fee: $1 to $3 depending on your add-ins (about ${money(diyFee(s.addins.length))} for yours). We'll confirm it by email.`;
+
+    const picked = s.addins.length;
+    const inc = s.deluxe.includes || [];
+    ADDINS.forEach((a) => {
+      const box = $("#add-" + a.id);
+      const isInc = inc.includes(a.id);
+      box.disabled = isInc || (!box.checked && picked >= MAX_ADDINS);
+      $("#row-" + a.id).classList.toggle("included", isInc);
+      $("#tag-" + a.id).textContent = isInc ? "✓ already in your texture" : "+" + money(a.price);
+      $("#row-" + a.id).classList.toggle("on", box.checked);
+      $("#row-" + a.id).classList.toggle("off", box.disabled);
+      $("#more-" + a.id).hidden = !box.checked;
+    });
+  }
+
+  function summary(s) {
+    const pickup = $("#pickup").selectedOptions[0].textContent;
+    return [
+      `Slime name: ${s.name || "(none)"}`,
+      `Base: ${s.base.name} (${SIZE}) ${money(s.base.price)}`,
+      `Deluxe texture: ${s.deluxe.id === "none" ? "none" : s.deluxe.name + (s.built.length ? " (includes " + s.built.map((a) => a.name.toLowerCase()).join(", ") + ")" : "") + (s.deluxe.price ? " +" + money(s.deluxe.price) : "")}`,
+      `Glitter: ${s.glitter ? s.glitter.col.name + " " + s.glitter.name.toLowerCase() + " (" + s.glitter.amt.name + "), free" : "none"}`,
+      `Color: ${s.color.name}`,
+      `Scent: ${s.scent.name}`,
+      `Add-ins: ${s.addins.length ? s.addins.map((a) => a.charms ? `Charms +${money(a.cost)}` : `${a.col ? a.col.name + " " : ""}${a.name} (${a.amt.name}) +${money(a.cost)}`).join(", ") : "none"}`,
+      `Mixing: ${s.mix.name}${s.fee ? ` (fee about ${money(s.fee)}, to confirm)` : ""}`,
+      `Charms: ${s.charms ? `${$("#charmWish").value.trim() || "(not specified)"} (to confirm)` : "none"}`,
+      `How: ${pickup}`,
+      `Mailing address: ${$("#address").value.trim() || "none"}`,
+      `Notes: ${$("#notes").value.trim() || "none"}`,
+      `Shipping: ${s.ship ? money(s.ship) + " flat (U.S.)" : "free (pickup)"}`,
+      `Estimated total: ${money(s.total)}`,
+      `Agreed custom slime is an experiment (texture not guaranteed): ${$("#agreeBox").checked ? "yes" : "no"}`,
+    ].join("\n");
+  }
+
+  $("#order").addEventListener("change", () => render());
+  $("#order").addEventListener("input", (e) => { if (e.target.matches("#slimeName, #charmWish")) render(); });
+
+  // Live site = real Netlify form. Anywhere else = test mode, nothing is sent.
+  const LIVE = /jellybeanslime\.(com|netlify\.app)$/.test(location.hostname);
+  $("#testBanner").hidden = LIVE;
+
+  $("#order").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const err = $("#err");
+    const fail = (msg) => { err.textContent = msg; err.hidden = false; };
+    if (!$("#custName").value.trim() || !/^\S+@\S+\.\S+$/.test($("#custEmail").value.trim()))
+      return fail("Please add your name and a real email so we can reach you.");
+    if ($("#pickup").value === "ship" && $("#address").value.trim().length < 10)
+      return fail("Please add your full mailing address so we can ship your slime.");
+    if (!$("#agreeBox").checked)
+      return fail("Please check the box to agree that custom slime is an experiment.");
+    err.hidden = true;
+    const text = summary(state());
+    $("#summaryField").value = text;
+    const finish = () => {
+      $("#order").hidden = true;
+      $("#done").hidden = false;
+      $("#doneSummary").textContent = text;
+      $("#doneMsg").textContent = LIVE
+        ? "We'll email you within 2 days to confirm your slime and send a payment link."
+        : "Test mode: this is what Deanna would receive. Nothing was sent.";
+      $("#done").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    if (!LIVE) return finish();
+    const st = state();
+    const btn = $("#sendBtn");
+    btn.disabled = true;
+    btn.textContent = CHECKOUT_READY ? "Taking you to checkout… 🫧" : "Sending… 🫧";
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(e.target)).toString(),
+    }).then((r) => {
+      if (!r.ok) throw 0;
+      if (!CHECKOUT_READY) return finish();
+      // order details are saved; now make a Square checkout for this exact slime
+      return fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          base: st.base.id, deluxe: st.deluxe.id,
+          addins: st.addins.map((a) => ({ id: a.id, amt: a.amt.id })),
+          pickup: $("#pickup").value, slimeName: st.name,
+          email: $("#custEmail").value.trim(), summary: text,
+        }),
+      }).then((r) => r.json()).then((d) => {
+        if (d && d.url) location.href = d.url;
+        else finish();
+      }).catch(() => finish());
+    }).catch(() => {
+      btn.disabled = false; btn.textContent = CHECKOUT_READY ? "Continue to payment 💳" : "Send my order request";
+      fail("That didn't go through. Please try again, or email support@jellybeanslime.com.");
+    });
+  });
+
+  // When Square checkout is set up on Netlify, switch the button to "pay now".
+  let CHECKOUT_READY = false;
+  if (LIVE) fetch("/api/checkout").then((r) => r.ok ? r.json() : null).then((d) => {
+    if (!d || !d.ready) return;
+    CHECKOUT_READY = true;
+    $("#sendBtn").textContent = "Continue to payment 💳";
+    $("#payHint").textContent = "You'll pay securely with Square on the next screen. Your total is figured out for you.";
+  }).catch(() => {});
+  // back from Square after paying
+  if (new URLSearchParams(location.search).get("paid")) {
+    $("#order").hidden = true;
+    $("#done").hidden = false;
+    $("#doneSummary").textContent = "";
+    $("#doneMsg").textContent = "Payment received! 🎉 We'll start mixing your slime and email you when it's ready.";
+  }
+
+  // ---------- peeking monsters change color each time they pop out ----------
+  const MONSTER_LOOKS = [
+    ["#ffd23f", "#ff8fc4", "#9ad8ff", "#b48cff"], // rainbow
+    ["#b48cff", "#7b5cff", "#4cc9f0"],            // galaxy
+    ["#ff5fa2", "#ffc2df"],                       // pink
+    ["#3ddbb0", "#4cc9f0"],                       // mint + blue
+    ["#ff8c2e", "#ffd23f"],                       // sunset
+    ["#9b5de5", "#ff5fa2"],                       // purple + pink
+    ["#3ddb7a", "#ffd23f"],                       // lime
+    ["#3aa7f0", "#a9dcff"],                       // blue
+    ["#ef3b4f", "#ff9f1c"],                       // red + orange
+    ["#ffc2df", "#a9dcff", "#e9dcff"],            // cotton candy
+  ];
+  let lookAt = Math.floor(Math.random() * MONSTER_LOOKS.length);
+  function recolor(gradId) {
+    const cols = MONSTER_LOOKS[lookAt++ % MONSTER_LOOKS.length];
+    $("#" + gradId).innerHTML = cols.map((c, i) => `<stop offset="${i / (cols.length - 1)}" stop-color="${c}"/>`).join("");
+  }
+  recolor("peekA"); recolor("peekB");
+  // each loop starts with the monster tucked off-screen, so the swap is never seen
+  $(".peek.left").addEventListener("animationiteration", () => recolor("peekA"));
+  $(".peek.right").addEventListener("animationiteration", () => recolor("peekB"));
+
+  $("#again").addEventListener("click", () => {
+    $("#done").hidden = true;
+    $("#order").hidden = false;
+    $("#slimeName").value = "";
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+
+  // ---------- party layer ----------
+  // back canvas: bubbles, twinkles, confetti sprinkles. front canvas: sparkle bursts on tap.
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fx = $("#fx"), ctx = fx.getContext("2d");
+  const topCv = $("#fxTop"), tctx = topCv.getContext("2d");
+  const PARTY = ["#ff5fa2", "#ffd23f", "#3ddbb0", "#4cc9f0", "#9b5de5", "#ff9f1c"];
+  const pickC = () => PARTY[Math.floor(Math.random() * PARTY.length)];
+  // phones get fewer particles, a 1x canvas and ~30fps so scrolling stays smooth
+  const small = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+  let W = 0, H = 0, bubbles = [], twinkles = [], confetti = [], bursts = [], topDirty = false, last = 0;
+
+  function sizeFx() {
+    const dpr = small ? 1 : Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    for (const [cv, cx] of [[fx, ctx], [topCv, tctx]]) { cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    const n = small ? 12 : Math.round(Math.min(40, 14 + W / 28));
+    bubbles = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, r: 6 + Math.random() * 20, v: .25 + Math.random() * .6, w: Math.random() * 6.28, c: pickC() }));
+    twinkles = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, r: 3 + Math.random() * 6, p: Math.random() * 6.28, c: pickC() }));
+    confetti = Array.from({ length: Math.round(n * .7) }, () => ({ x: Math.random() * W, y: Math.random() * H, a: Math.random() * 6.28, va: (Math.random() - .5) * .05, v: .3 + Math.random() * .5, c: pickC() }));
+  }
+
+  function starPath(c, x, y, r) {
+    c.beginPath();
+    for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rr = i % 2 ? r * .35 : r; c.lineTo(x + Math.sin(a) * rr, y - Math.cos(a) * rr); }
+    c.closePath();
+  }
+
+  // step = how many 60fps frames passed, so motion speed is the same at 30fps
+  function drawBack(t, step) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 2.2;
+    for (const b of bubbles) {
+      if (!calm) { b.y -= b.v * step; b.x += Math.sin(t / 1200 + b.w) * .35 * step; if (b.y < -30) { b.y = H + 30; b.x = Math.random() * W; } }
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283);
+      ctx.fillStyle = "rgba(255,255,255,.4)"; ctx.fill();
+      ctx.strokeStyle = b.c + "99"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(b.x - b.r * .35, b.y - b.r * .35, b.r * .22, 0, 6.283); ctx.fillStyle = "rgba(255,255,255,.95)"; ctx.fill();
+    }
+    ctx.globalAlpha = .7;
+    for (const f of confetti) {
+      if (!calm) { f.y += f.v * step; f.a += f.va * step; f.x += Math.sin(t / 900 + f.a) * .2 * step; if (f.y > H + 10) { f.y = -10; f.x = Math.random() * W; } }
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(fx.width / W, fx.height / H); ctx.translate(f.x, f.y); ctx.rotate(f.a);
+      ctx.fillStyle = f.c; ctx.fillRect(-5, -1.6, 10, 3.2);
+    }
+    ctx.setTransform(fx.width / W, 0, 0, fx.height / H, 0, 0);
+    for (const s of twinkles) {
+      const k = calm ? .7 : (Math.sin(t / 450 + s.p) + 1) / 2;
+      starPath(ctx, s.x, s.y, s.r * (.4 + .6 * k)); ctx.fillStyle = s.c; ctx.globalAlpha = .3 + .6 * k; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawTop(step) {
+    if (!bursts.length && !topDirty) return; // nothing to draw: skip the whole layer
+    tctx.clearRect(0, 0, W, H);
+    bursts = bursts.filter((p) => (p.life -= step) > 0);
+    tctx.lineWidth = 1; tctx.strokeStyle = "rgba(45,27,90,.35)";
+    for (const p of bursts) {
+      p.x += p.vx * step; p.y += p.vy * step; p.vy += .14 * step; p.vx *= .98;
+      tctx.globalAlpha = Math.min(1, p.life / 25);
+      if (p.round) { tctx.beginPath(); tctx.arc(p.x, p.y, p.r * .6, 0, 6.283); }
+      else starPath(tctx, p.x, p.y, p.r);
+      tctx.fillStyle = p.c; tctx.fill(); tctx.stroke();
+    }
+    tctx.globalAlpha = 1;
+    topDirty = bursts.length > 0;
+  }
+
+  function frame(t) {
+    requestAnimationFrame(frame);
+    const gap = t - last;
+    if (small && gap < 30) return; // ~30fps on phones
+    const step = Math.min(3, gap / 16.7 || 1);
+    last = t;
+    if (!calm || !drawn) { drawBack(t, step); drawn = true; }
+    drawTop(step);
+  }
+  let drawn = false;
+  function burst(x, y, n = 18) {
+    if (small) n = Math.ceil(n * .6);
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * 6.283, v = 2 + Math.random() * 4.5;
+      bursts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 2, r: 4 + Math.random() * 5, c: PARTY[i % PARTY.length], life: 45 + Math.random() * 25, round: i % 3 === 0 });
+    }
+  }
+  // phones fire "resize" while scrolling (the address bar slides), so only rebuild on real size changes
+  sizeFx();
+  addEventListener("resize", () => { if (innerWidth !== W || Math.abs(innerHeight - H) > 140) { sizeFx(); drawn = false; } });
+  requestAnimationFrame(frame);
+
+  // sparkle burst wherever you tap (bigger on buttons and choices)
+  document.addEventListener("pointerdown", (e) => {
+    const hit = e.target.closest("label, button, input, select, textarea");
+    burst(e.clientX, e.clientY, hit ? (hit.matches(".send") ? 44 : 22) : 12);
+  });
+  // the jar boings and the price pops when anything changes
+  let lastPrice = "";
+  const _render = render;
+  render = function () {
+    _render();
+    const jarEl = $("#jar"), priceEl = $("#pPrice");
+    jarEl.classList.remove("boing"); void jarEl.getBoundingClientRect(); jarEl.classList.add("boing");
+    if (priceEl.textContent !== lastPrice) { priceEl.classList.remove("go"); void priceEl.offsetWidth; priceEl.classList.add("go"); lastPrice = priceEl.textContent; }
+  };
+  render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jellybean Slime · Next drop: TBA</title>
+<meta name="description" content="Small batch and handmade in Lafayette, LA. Next drop: TBA. Get on the list for first dibs.">
+<meta property="og:title" content="Jellybean Slime">
+<meta property="og:description" content="Shhh... you found us early. Next drop: TBA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jellybeanslime.com/">
+<meta property="og:site_name" content="Jellybean Slime">
+<meta property="og:image" content="https://jellybeanslime.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jellybeanslime.com/og-image.png">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@700;800&family=Fredoka:wght@600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fffdf8;
+    --ink: #3b2a55;
+    --pink: #ff6fa8;
+    --pink-dk: #e04d8b;
+    --yellow: #ffd23f;
+    --mint: #3ddbb0;
+    --sky: #4cc9f0;
+    --purple: #8f6bff;
+    --purple-dk: #6b47e0;
+    --paper: rgba(255,255,255,.78);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body {
+    font-family: "Nunito", system-ui, sans-serif; font-weight: 700; color: var(--ink);
+    min-height: 100vh; overflow-x: hidden; position: relative;
+    background: var(--bg) url("/watercolor-bg.jpg") center top / 100% 100% no-repeat;
+  }
+
+  /* painted rainbow drip across the top */
+  .drip { display: block; width: 100%; height: 74px; opacity: .9; }
+
+  /* twinkle sparkles */
+  .tw { position: absolute; pointer-events: none; z-index: 0; animation: twinkle 3.5s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { transform: scale(1) rotate(0); opacity: .9 } 50% { transform: scale(.7) rotate(20deg); opacity: .5 } }
+
+  main { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 0 16px 48px; text-align: center; }
+
+  .monster { width: min(190px, 48vw); height: auto; margin-top: 4px; filter: drop-shadow(0 10px 16px rgba(143,107,255,.25)); animation: wiggle 4s ease-in-out infinite; }
+  @keyframes wiggle { 0%,100% { transform: rotate(-3deg) } 50% { transform: rotate(3deg) } }
+
+  .brand {
+    font-family: "Grandstander", "Fredoka", sans-serif; font-weight: 800;
+    font-size: clamp(42px, 12vw, 64px); line-height: 1; margin-top: 4px;
+    background: linear-gradient(90deg, #ff5fa2, #ff9f1c, #f5c400, #3ddbb0, #4cc9f0, #9b5de5);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tag { font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 22px; margin-top: 8px; }
+  .drop {
+    display: inline-block; font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 19px;
+    background: var(--ink); color: #fff; padding: 7px 20px; border-radius: 999px; margin: 12px 0 8px; transform: rotate(-2deg);
+  }
+  .drop b { color: var(--yellow); }
+  .sub { font-size: 15px; opacity: .75; margin-bottom: 22px; }
+
+  .topnav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 0 4px; }
+  .topnav a { flex: 1 1 200px; max-width: 260px; text-decoration: none; font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 17px; padding: 11px 18px; border-radius: 999px; color: #fff; transition: transform .1s, box-shadow .1s; }
+  .topnav a:active { transform: translateY(3px); box-shadow: none !important; }
+  .topnav .nb { background: var(--pink); box-shadow: 0 4px 0 var(--pink-dk); }
+  .topnav .np { background: var(--purple); box-shadow: 0 4px 0 var(--purple-dk); }
+  .topnav .na { background: #3ccfa5; box-shadow: 0 4px 0 #22a07c; }
+
+  /* soft paper cards with a hand-painted edge */
+  .card {
+    position: relative; background: var(--paper);
+    border: 3px solid #ffb3d1;
+    border-radius: 34px 28px 36px 26px / 28px 36px 26px 34px;
+    padding: 22px 18px; margin: 0 0 22px;
+    box-shadow: 0 8px 24px rgba(143,107,255,.10);
+  }
+  .card.shop { border-color: #ffb3d1; padding: 22px 14px; }
+  .card#list { border-color: #a8e6ff; }
+  .card.market { border-color: #9feed3; }
+  .card.party { border-color: #c9b3ff; }
+
+  h2 { font-family: "Grandstander", sans-serif; font-weight: 800; font-size: 27px; margin-bottom: 8px; }
+  .card p { font-size: 16px; line-height: 1.5; }
+  a { color: var(--purple-dk); font-weight: 800; }
+
+  .btn, button {
+    display: inline-block; margin-top: 14px; text-decoration: none; cursor: pointer;
+    font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 18px;
+    padding: 11px 24px; border-radius: 999px; border: 0; color: #fff;
+    background: var(--purple); box-shadow: 0 4px 0 var(--purple-dk); transition: transform .1s, box-shadow .1s;
+  }
+  .btn:active, button:active { transform: translateY(4px); box-shadow: none; }
+
+  form { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  input[type=email] {
+    flex: 1 1 200px; min-width: 0; font: inherit; font-size: 16px;
+    padding: 13px 18px; border-radius: 999px; border: 2.5px solid #a8e6ff; background: #fff; color: var(--ink);
+  }
+  input[type=email]:focus { outline: none; border-color: var(--sky); }
+  form button { flex: 1 1 140px; margin-top: 0; background: var(--pink); box-shadow: 0 4px 0 var(--pink-dk); }
+  .hidden { display: none; }
+
+  .when { font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 19px; margin-top: 6px; }
+  .pin { font-size: 15px; }
+
+  .products { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .product { display: flex; flex-direction: column; color: var(--ink); }
+  .product img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 22px; box-shadow: 0 6px 14px rgba(59,42,85,.15); }
+  .product .info { padding: 10px 2px 4px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .product h3 { font-family: "Grandstander", sans-serif; font-weight: 800; font-size: 19px; line-height: 1.1; }
+  .product .tex { font-size: 13px; opacity: .7; margin: 3px 0 8px; }
+  .product .buy {
+    margin-top: auto; display: inline-block; text-decoration: none;
+    font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 14px; line-height: 1.2;
+    background: var(--pink); color: #fff; border-radius: 999px; padding: 8px 12px; box-shadow: 0 3px 0 var(--pink-dk);
+  }
+  .product .buy:active { transform: translateY(3px); box-shadow: none; }
+  .product .alt { font-size: 13px; color: var(--purple-dk); opacity: .85; margin-top: 7px; }
+  .shop .note { font-size: 13px; opacity: .7; margin-top: 14px; }
+
+  .socials { display: flex; justify-content: center; gap: 12px; margin: 8px 0 18px; }
+  .socials a {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink);
+    background: var(--paper); border: 2.5px solid #c9b3ff; border-radius: 999px; padding: 8px 16px; font-size: 15px;
+  }
+  .socials svg { width: 20px; height: 20px; }
+  footer { font-size: 13px; opacity: .7; line-height: 1.6; }
+  .product.mystery { grid-column: 1 / -1; }
+  .mystery-art { display: block; width: 100%; height: auto; background: #fff; border-radius: 22px; box-shadow: 0 6px 14px rgba(59,42,85,.15); }
+  .product.mystery .tex { font-size: 14px; }
+  .tex-label { font-size: 13px; opacity: .75; margin: 2px 0 8px; }
+  .tex-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-bottom: 10px; }
+  .tex-chip { flex: none; margin: 0; font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--c); border: 2px solid var(--c); box-shadow: none; }
+  .tex-chip:active { transform: none; box-shadow: none; }
+  .tex-chip[aria-expanded="true"] { background: var(--c); color: #fff; }
+  .tex-desc { background: #fff; border: 2px dashed var(--c, #c9b3ff); border-radius: 18px; padding: 10px 14px; font-size: 14px; line-height: 1.45; margin: 0 0 12px; max-width: 420px; }
+  .tex-desc b { font-family: "Grandstander", sans-serif; color: var(--c); }
+  .more-info { flex: none; margin: 8px 0 0; padding: 0; background: none; border: 0; box-shadow: none; color: var(--purple-dk); font-family: "Nunito", sans-serif; font-weight: 800; font-size: 13px; text-decoration: underline; cursor: pointer; }
+  .more-info:active { transform: none; }
+  .tex-pop { margin: auto; width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; border: 3px solid #c9b3ff; border-radius: 30px; padding: 22px 18px 18px; background: #fffdf8; color: var(--ink); text-align: center; position: fixed; }
+  .tex-pop::backdrop { background: rgba(59,42,85,.45); }
+  .tex-pop h2 { font-size: 23px; padding: 0 24px; }
+  .tex-intro { font-size: 14px; opacity: .8; margin-bottom: 4px; }
+  .tex-close { position: absolute; top: 10px; right: 10px; margin: 0; width: 34px; height: 34px; padding: 0; border-radius: 50%; font-size: 15px; background: #f1eaff; color: var(--ink); box-shadow: none; }
+  .tex-close:active { transform: none; }
+  .tex-pop .tex-desc { margin: 0 auto; text-align: left; }
+  @media (max-width: 360px) { .products { grid-template-columns: 1fr; } }
+  .reviews { display: grid; gap: 12px; margin: 14px 0 4px; text-align: left; }
+  .review { background: #fff; border: 2.5px solid #ffd1e6; border-radius: 22px; padding: 14px 16px; }
+  .review .stars { color: #ffb800; font-size: 18px; letter-spacing: 2px; }
+  .review blockquote { margin: 6px 0 8px; font-size: 16px; }
+  .review .who { font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 14px; color: var(--purple-dk); }
+  .rev-empty { font-size: 15px; opacity: .8; margin: 8px 0 4px; }
+  .rev-pop form { display: grid; gap: 12px; text-align: left; margin-top: 12px; }
+  .rev-pop label { display: block; font-size: 15px; }
+  .rev-pop input[type=text], .rev-pop select, .rev-pop textarea { display: block; margin-top: 6px; width: 100%; font: inherit; font-size: 16px; padding: 11px 15px; border-radius: 18px; border: 2.5px solid #d9c9f5; background: #fff; color: var(--ink); }
+  .rev-pop textarea { min-height: 100px; resize: vertical; }
+  .rev-pop input:focus, .rev-pop select:focus, .rev-pop textarea:focus { outline: none; border-color: var(--pink); }
+  .star-pick { border: 0; padding: 0; margin: 0; }
+  .star-pick legend { font-size: 15px; margin-bottom: 4px; padding: 0; }
+  .star-row { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; }
+  .star-pick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .star-pick label { font-size: 34px; line-height: 1; color: #e3d9f5; cursor: pointer; }
+  .star-pick input:checked ~ label, .star-pick label:hover, .star-pick label:hover ~ label { color: #ffb800; }
+  .star-pick input:focus-visible + label { outline: 2px solid var(--pink); border-radius: 6px; }
+  .rev-ok { display: flex !important; gap: 8px; align-items: flex-start; font-size: 14px !important; }
+  .rev-ok input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+  .rev-pop button[type=submit] { width: 100%; margin: 0; background: var(--pink); box-shadow: 0 4px 0 var(--pink-dk); }
+  .rev-thanks { font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 20px; margin: 18px 0 6px; }
+  @media (prefers-reduced-motion: reduce) { .monster, .tw { animation: none; } }
+  /* pop-ups stay centered on screen while open */
+  dialog[open] { position: fixed; inset: 0; margin: auto; height: fit-content; }
+  html:has(dialog[open]) { overflow: hidden; }
+</style>
+</head>
+<body>
+
+<svg class="drip" viewBox="0 0 1200 74" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="rb" x1="0" x2="1">
+      <stop offset="0" stop-color="#ff8fbf"/><stop offset=".25" stop-color="#ffbf80"/>
+      <stop offset=".45" stop-color="#ffe27a"/><stop offset=".65" stop-color="#8eeccb"/>
+      <stop offset=".82" stop-color="#7fdcff"/><stop offset="1" stop-color="#b892ff"/>
+    </linearGradient>
+    <filter id="paint" x="-5%" y="-20%" width="110%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="3" seed="4"/>
+      <feDisplacementMap in="SourceGraphic" scale="8"/>
+    </filter>
+  </defs>
+  <path filter="url(#paint)" fill="url(#rb)" d="M0 0H1200V22c-30 0-34 40-60 40s-26-34-56-34-30 20-62 20-28-26-60-26-34 44-64 44-28-38-58-38-32 18-62 18-30-30-62-30-30 36-60 36-30-22-60-22-32 26-62 26-30-40-60-40-30 30-62 30-30-18-60-18-32 38-62 38-28-32-58-32-32 22-62 22-30-28-60-28-34 40-64 40-26-30-56-30-30 16-60 16-30-26-60-26V0z"/>
+</svg>
+<svg class="tw" style="top:96px;left:7%;width:20px;height:20px;animation-delay:0s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" fill="#ffd23f" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:150px;right:8%;width:18px;height:18px;animation-delay:-1s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 L2.9,-3.6 9.5,-3.1 4.5,1.4 5.9,8.1 0,4.6 -5.9,8.1 -4.5,1.4 -9.5,-3.1 -2.9,-3.6Z" fill="#ff6fa8" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:330px;left:5%;width:14px;height:14px;animation-delay:-2s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" fill="#4cc9f0" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:420px;right:6%;width:16px;height:16px;animation-delay:-0.5s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" fill="#8f6bff" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:58%;left:4%;width:16px;height:16px;animation-delay:-1.5s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 L2.9,-3.6 9.5,-3.1 4.5,1.4 5.9,8.1 0,4.6 -5.9,8.1 -4.5,1.4 -9.5,-3.1 -2.9,-3.6Z" fill="#3ddbb0" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:75%;right:5%;width:18px;height:18px;animation-delay:-2.5s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" fill="#ffd23f" stroke-linejoin="round"/></svg>
+<svg class="tw" style="top:90%;left:8%;width:14px;height:14px;animation-delay:-3s" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" fill="#ff6fa8" stroke-linejoin="round"/></svg>
+
+<main>
+  <nav class="topnav" aria-label="Quick links">
+    <a class="nb" href="/build.html">🧪 Create your own slime</a>
+    <a class="np" href="/party.html">🎉 Book a party</a>
+    <a class="na" href="/about.html">💖 About us &amp; gallery</a>
+  </nav>
+  <img class="monster" src="/monster.png" alt="Jellybean Slime rainbow slime monster" width="431" height="440">
+  <h1 class="brand">Jellybean Slime</h1>
+  <p class="tag">Shhh... you found us early. 👀</p>
+  <div class="drop">Next drop: <b>TBA</b></div>
+  <p class="sub">Small batch and handmade in Lafayette, LA.</p>
+
+  <section class="card shop" id="shop">
+    <h2>Shop the first slimes 🛍️</h2>
+    <p>6oz jars, handmade in small batches. Buy right here or on Etsy!</p>
+    <div class="products">
+      <div class="product">
+        <a href="https://square.link/u/KSvlYPdy" target="_blank" rel="noopener"><img src="/iced-lemonade.jpg" alt="Iced Lemonade jelly cube slime with lemon charms" width="800" height="800" loading="lazy"></a>
+        <div class="info">
+          <h3>Iced Lemonade</h3>
+          <p class="tex">jelly cube x bingsu</p>
+          <a class="buy" href="https://square.link/u/KSvlYPdy" target="_blank" rel="noopener">Buy now · $12 + shipping</a>
+          <a class="alt" href="https://jellybeanslime337.etsy.com/listing/4611024360" target="_blank" rel="noopener">or on Etsy</a>
+        </div>
+      </div>
+      <div class="product">
+        <a href="https://square.link/u/uUNqrXxG" target="_blank" rel="noopener"><img src="/fairy-floss.jpg" alt="Fairy Floss pink cloud dough slime with rose and bow charms" width="800" height="800" loading="lazy"></a>
+        <div class="info">
+          <h3>Fairy Floss</h3>
+          <p class="tex">cloud dough</p>
+          <a class="buy" href="https://square.link/u/uUNqrXxG" target="_blank" rel="noopener">Buy now · $12 + shipping</a>
+          <a class="alt" href="https://jellybeanslime337.etsy.com/listing/4611027106" target="_blank" rel="noopener">or on Etsy</a>
+        </div>
+      </div>
+      <div class="product mystery">
+        <svg class="mystery-art" viewBox="0 0 400 190" role="img" aria-label="Three mystery slime jars with question marks">
+      <defs>
+        <filter id="mwc" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="22"/><feGaussianBlur stdDeviation="3"/></filter>
+        <linearGradient id="mA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb3d1"/><stop offset="1" stop-color="#ff6fa8"/></linearGradient>
+        <linearGradient id="mB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a8e6ff"/><stop offset="1" stop-color="#8f6bff"/></linearGradient>
+        <linearGradient id="mC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#3ddbb0"/></linearGradient>
+      </defs>
+      <ellipse cx="110" cy="100" rx="110" ry="80" fill="#ffb3d1" opacity=".35" filter="url(#mwc)"/>
+      <ellipse cx="290" cy="95" rx="115" ry="80" fill="#a8e6ff" opacity=".4" filter="url(#mwc)"/>
+      <ellipse cx="200" cy="130" rx="120" ry="55" fill="#fff0a8" opacity=".45" filter="url(#mwc)"/>
+      <g transform="translate(95 105) rotate(-8)">
+      <rect x="-46" y="-62" width="92" height="22" rx="8" fill="#ff6fa8"/>
+      <rect x="-50" y="-44" width="100" height="104" rx="26" fill="#ffffff" fill-opacity=".75" stroke="#ff6fa8" stroke-width="3"/>
+      <path d="M-44 -6 Q-22 -16 0 -6 T44 -6 V36 Q44 54 26 54 H-26 Q-44 54 -44 36Z" fill="url(#mA)"/>
+      <text x="0" y="40" text-anchor="middle" font-family="Grandstander, Fredoka, sans-serif" font-weight="800" font-size="54" fill="#fff" stroke="#e04d8b" stroke-width="2">?</text>
+      <ellipse cx="-30" cy="-26" rx="6" ry="12" fill="#fff" opacity=".8"/>
+    </g>
+      <g transform="translate(305 105) rotate(8)">
+      <rect x="-46" y="-62" width="92" height="22" rx="8" fill="#3ddbb0"/>
+      <rect x="-50" y="-44" width="100" height="104" rx="26" fill="#ffffff" fill-opacity=".75" stroke="#3ddbb0" stroke-width="3"/>
+      <path d="M-44 -6 Q-22 -16 0 -6 T44 -6 V36 Q44 54 26 54 H-26 Q-44 54 -44 36Z" fill="url(#mC)"/>
+      <text x="0" y="40" text-anchor="middle" font-family="Grandstander, Fredoka, sans-serif" font-weight="800" font-size="54" fill="#fff" stroke="#22b98f" stroke-width="2">?</text>
+      <ellipse cx="-30" cy="-26" rx="6" ry="12" fill="#fff" opacity=".8"/>
+    </g>
+      <g transform="translate(200 95) rotate(0)">
+      <rect x="-46" y="-62" width="92" height="22" rx="8" fill="#8f6bff"/>
+      <rect x="-50" y="-44" width="100" height="104" rx="26" fill="#ffffff" fill-opacity=".75" stroke="#8f6bff" stroke-width="3"/>
+      <path d="M-44 -6 Q-22 -16 0 -6 T44 -6 V36 Q44 54 26 54 H-26 Q-44 54 -44 36Z" fill="url(#mB)"/>
+      <text x="0" y="40" text-anchor="middle" font-family="Grandstander, Fredoka, sans-serif" font-weight="800" font-size="54" fill="#fff" stroke="#6b47e0" stroke-width="2">?</text>
+      <ellipse cx="-30" cy="-26" rx="6" ry="12" fill="#fff" opacity=".8"/>
+    </g>
+      <path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(30 30) scale(1.1)" fill="#ffd23f"/><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(370 36) scale(1)" fill="#ff6fa8"/><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(255 20) scale(0.7)" fill="#4cc9f0"/><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(150 172) scale(0.8)" fill="#8f6bff"/><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(380 160) scale(0.8)" fill="#ffd23f"/><path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z" transform="translate(20 160) scale(0.7)" fill="#4cc9f0"/>
+    </svg>
+        <div class="info">
+          <h3>Mystery Slime Pack 🎁</h3>
+          <p class="tex">3 surprise 4oz slimes, all different textures!</p>
+          <a class="buy" href="https://square.link/u/tiwv8Vkx" target="_blank" rel="noopener">3 for $20 + shipping</a>
+          <button type="button" class="more-info" id="mysteryInfo" aria-haspopup="dialog">More info</button>
+        </div>
+      </div>
+    </div>
+    <p class="note">Contains small charms. Not for children under 3.</p>
+  </section>
+
+  <section class="card" id="reviews">
+    <h2>Slimer reviews 💬</h2>
+    <div class="reviews" id="reviewList">
+      <!-- To add a review, copy this block and fill it in:
+      <figure class="review">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>Review text here.</blockquote>
+        <figcaption class="who">Name · Slime name</figcaption>
+      </figure>
+      -->
+    </div>
+    <p class="rev-empty" id="revEmpty">No reviews yet. Got a Jellybean slime? Be the first to tell us what you think!</p>
+    <button type="button" class="btn" id="revOpen">✍️ Write a review</button>
+  </section>
+
+  <section class="card" id="list">
+    <h2>Want first dibs?</h2>
+    <p>Drop your email below or email <a href="mailto:drops@jellybeanslime.com">drops@jellybeanslime.com</a> to get on the list.</p>
+    <form name="drops-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="signup">
+      <input type="hidden" name="form-name" value="drops-list">
+      <p class="hidden"><label>Leave this empty: <input name="bot-field"></label></p>
+      <input type="email" name="email" placeholder="your@email.com" required aria-label="Email address">
+      <button type="submit">Get on the list</button>
+    </form>
+    <p class="hidden" id="thanks" style="margin-top:16px;font-family:Fredoka,sans-serif;font-size:20px">You're on the list! 🫧</p>
+  </section>
+
+  <section class="card market">
+    <h2>Catch us in person! 📍</h2>
+    <p>New pop-up location coming soon!</p>
+    <p class="when">Get on the list above to hear where we'll be next.</p>
+  </section>
+
+  <section class="card party">
+    <h2>Want to book a slime party? 🎉</h2>
+    <p>We cater to parties of all sizes and all ages. Reach out for more info and rates!</p>
+    <p style="font-size:14px;opacity:.8;margin-top:6px">$100 minimum non-refundable deposit to book.</p>
+    <a class="btn" href="/party.html">Plan my party</a>
+  </section>
+
+  <div class="socials">
+    <a href="https://www.tiktok.com/@jellybeanslime" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6z"/></svg>
+      TikTok
+    </a>
+    <a href="https://www.instagram.com/shopjellybeanslime" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      Instagram
+    </a>
+  </div>
+
+  <footer>
+    Small batch and handmade in Lafayette, LA.<br>
+    Slime is not food. Ages 3+. Adult supervision recommended.<br>
+    <a href="/about.html">About us &amp; gallery</a> · © 2026 Jellybean Slime
+  </footer>
+</main>
+
+<script>
+  // send the signup in the background and show a thank-you instead of leaving the page
+  document.getElementById('signup').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).then(function () {
+      form.classList.add('hidden');
+      document.getElementById('thanks').classList.remove('hidden');
+    }).catch(function () {
+      form.submit();
+    });
+  });
+</script>
+<dialog class="tex-pop rev-pop" id="revPop" aria-labelledby="revTitle">
+  <button type="button" class="tex-close" id="revClose" aria-label="Close">✕</button>
+  <h2 id="revTitle">Leave a review 💖</h2>
+  <p class="tex-intro">Tell us how your slime is doing! We read every single one.</p>
+  <form name="reviews" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="revForm">
+    <input type="hidden" name="form-name" value="reviews">
+    <p class="hidden"><label>Leave this empty: <input name="bot-field"></label></p>
+    <fieldset class="star-pick">
+      <legend>Your rating</legend>
+      <div class="star-row">
+      <input type="radio" id="st5" name="stars" value="5" required><label for="st5" title="5 stars">★</label>
+      <input type="radio" id="st4" name="stars" value="4"><label for="st4" title="4 stars">★</label>
+      <input type="radio" id="st3" name="stars" value="3"><label for="st3" title="3 stars">★</label>
+      <input type="radio" id="st2" name="stars" value="2"><label for="st2" title="2 stars">★</label>
+      <input type="radio" id="st1" name="stars" value="1"><label for="st1" title="1 star">★</label>
+      </div>
+    </fieldset>
+    <label>Which slime?
+      <select name="slime" required>
+        <option value="">Pick one</option>
+        <option>Iced Lemonade</option>
+        <option>Fairy Floss</option>
+        <option>Mystery Pack</option>
+        <option>Build your own slime</option>
+        <option>Slime party</option>
+        <option>Something else</option>
+      </select>
+    </label>
+    <label>Your review
+      <textarea name="review" required maxlength="600" placeholder="How does it feel? Sound? Smell? Tell us everything!"></textarea>
+    </label>
+    <label>First name (or a nickname)
+      <input type="text" name="name" required maxlength="40" placeholder="Like Mia, or Slime Queen">
+    </label>
+    <label class="rev-ok"><input type="checkbox" name="ok-to-share" value="yes" checked> It's OK to show my review on the Jellybean Slime website.</label>
+    <button type="submit">Send my review</button>
+  </form>
+  <p class="rev-thanks hidden" id="revThanks">Thank you so much! 🫧<br><span style="font-family:Nunito,sans-serif;font-size:15px;font-weight:600">Your review will pop up here soon.</span></p>
+</dialog>
+
+<script>
+  // reviews: open the pop-up, send the form in the background, say thanks
+  (function () {
+    var pop = document.getElementById('revPop'), form = document.getElementById('revForm');
+    if (document.querySelector('#reviewList .review')) document.getElementById('revEmpty').classList.add('hidden');
+    document.getElementById('revOpen').addEventListener('click', function () { pop.showModal(); });
+    document.getElementById('revClose').addEventListener('click', function () { pop.close(); });
+    pop.addEventListener('click', function (e) { if (e.target === pop) pop.close(); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form)).toString()
+      }).then(function () {
+        form.classList.add('hidden');
+        document.getElementById('revThanks').classList.remove('hidden');
+      }).catch(function () { form.submit(); });
+    });
+  })();
+</script>
+<dialog class="tex-pop" id="texPop" aria-labelledby="texPopTitle">
+  <button type="button" class="tex-close" id="texClose" aria-label="Close">✕</button>
+  <h2 id="texPopTitle">What's in the Mystery Pack? 🎁</h2>
+  <p class="tex-intro" style="margin-bottom:12px">3 surprise 4oz slimes, all different textures. Yours could be any of these. Tap one to learn about it!</p>
+          <div class="tex-chips">
+            <button type="button" class="tex-chip" style="--c:#A87A00" data-desc="Soft clay kneaded in for a buttery, spreadable feel. Zero mess, total comfort. The best place to start." aria-expanded="false" aria-controls="texDesc">Butter</button>
+            <button type="button" class="tex-chip" style="--c:#D3346F" data-desc="Made with instant snow, so it drizzles and pulls apart in soft, airy clumps. A cloud you can actually hold." aria-expanded="false" aria-controls="texDesc">Cloud Dough</button>
+            <button type="button" class="tex-chip" style="--c:#C8102E" data-desc="Thick and whipped with a heavier, denser feel in your hands. It holds every swirl you give it." aria-expanded="false" aria-controls="texDesc">Frosting</button>
+            <button type="button" class="tex-chip" style="--c:#D3346F" data-desc="Tiny foam beads packed into a glossy base. Every squeeze is a crunchy little burst of sound." aria-expanded="false" aria-controls="texDesc">Foam Crunch</button>
+            <button type="button" class="tex-chip" style="--c:#D9661A" data-desc="Soft foam cubes suspended in clear slime. Squeeze for the most satisfying pops." aria-expanded="false" aria-controls="texDesc">Jelly Cube</button>
+            <button type="button" class="tex-chip" style="--c:#2E7D4A" data-desc="Tiny volcanic pebbles (yes, the ones in garden soil) for a crisp, crackly crunch." aria-expanded="false" aria-controls="texDesc">Perlite</button>
+            <button type="button" class="tex-chip" style="--c:#4F4568" data-desc="The stone from your shower, ground up. The result? A super sizzly slime: smooth with a little grit." aria-expanded="false" aria-controls="texDesc">Pumice</button>
+            <button type="button" class="tex-chip" style="--c:#24875A" data-desc="Clear slime packed with tiny beads for that crunchy, crackly texture slime fans live for. With so many beads, pull it slow!" aria-expanded="false" aria-controls="texDesc">Bingsu Beads</button>
+            <button type="button" class="tex-chip" style="--c:#6A3FC4" data-desc="High shine and stretchy. Fold it, trap the air, and pop those bubbles for loud clicks." aria-expanded="false" aria-controls="texDesc">Glossy</button>
+            <button type="button" class="tex-chip" style="--c:#1F70AE" data-desc="Glass-clear and showing off every glitter and charm. A little tacky, totally worth it." aria-expanded="false" aria-controls="texDesc">Clear</button>
+          </div>
+          <p class="tex-desc" id="texDesc" aria-live="polite" hidden></p>
+</dialog>
+
+<script>
+  // mystery pack: tap a texture to read about it (tap again to close)
+  (function () {
+    var box = document.getElementById('texDesc');
+    var chips = document.querySelectorAll('.tex-chip');
+    chips.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var open = b.getAttribute('aria-expanded') === 'true';
+        chips.forEach(function (o) { o.setAttribute('aria-expanded', 'false'); });
+        if (open) { box.hidden = true; return; }
+        b.setAttribute('aria-expanded', 'true');
+        box.style.setProperty('--c', b.style.getPropertyValue('--c'));
+        box.innerHTML = '';
+        var t = document.createElement('b'); t.textContent = b.textContent + ': ';
+        box.appendChild(t); box.appendChild(document.createTextNode(b.getAttribute('data-desc')));
+        box.hidden = false;
+      });
+    });
+  })();
+  (function () {
+    var pop = document.getElementById('texPop');
+    document.getElementById('mysteryInfo').addEventListener('click', function () { pop.showModal(); });
+    document.getElementById('texClose').addEventListener('click', function () { pop.close(); });
+    pop.addEventListener('click', function (e) { if (e.target === pop) pop.close(); });
+  })();
+</script>
+</body>
+</html>
