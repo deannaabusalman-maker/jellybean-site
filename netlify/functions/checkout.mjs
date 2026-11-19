@@ -1,13 +1,14 @@
 // Build-your-own checkout: re-prices the order on the server (so nobody can change the price
 // in their browser) and creates a one-time Square checkout link for exactly that total.
 // Needs two Netlify environment variables: SQUARE_ACCESS_TOKEN and SQUARE_LOCATION_ID.
+// Shipping is priced live from Shippo (see ../lib/shipping.mjs).
+import { quote } from "../lib/shipping.mjs";
 
 const BASES = { butter: 12, cloud: 12, glossy: 12, clear: 12 };
 const DELUXE = { none: 0, perlite: 1, bingsu: 2, pumice: 2, frosting: 1, cloud: 1, clouddough: 1, foamcrunch: 2 };
 const DELUXE_INCLUDES = { perlite: ["perlite"], bingsu: ["bingsu"], foamcrunch: ["foam"] };
 const ADDINS = { foam: 1, bingsu: 1, jelly: 1, perlite: 1, clay: 1, charms: 1 };
 const EXTRA = { reg: 0, xtra: 0.5, xtra2: 1 }; // charms have no amount choice
-const SHIPPING = 7;
 const MAX_ADDINS = 5;
 
 const json = (obj, status = 200) =>
@@ -47,10 +48,15 @@ export default async (req) => {
     base_price_money: { amount: Math.round(slimePrice * 100), currency: "USD" },
     note: clean(b.summary, 1900),
   }];
-  if (ship) lineItems.push({
-    name: "Shipping (U.S. flat rate)", quantity: "1",
-    base_price_money: { amount: SHIPPING * 100, currency: "USD" },
-  });
+  let shipQuote = null;
+  if (ship) {
+    try { shipQuote = await quote(b.address); }
+    catch (e) { return json({ error: e.message === "address" ? "address" : "shipping" }, 400); }
+    lineItems.push({
+      name: `Shipping (${shipQuote.service})`, quantity: "1",
+      base_price_money: { amount: Math.round(shipQuote.amount * 100), currency: "USD" },
+    });
+  }
 
   const site = new URL(req.url).origin;
   const body = {
@@ -58,7 +64,7 @@ export default async (req) => {
     order: { location_id: location, line_items: lineItems, reference_id: "build-your-own" },
     checkout_options: {
       redirect_url: `${site}/build.html?paid=1`,
-      ask_for_shipping_address: ship,
+      ask_for_shipping_address: false, // we already have their address (shipping was priced from it)
       allow_tipping: false,
     },
   };
@@ -79,7 +85,7 @@ export default async (req) => {
     console.log("Square error", r.status, JSON.stringify(data.errors || data));
     return json({ error: "square" }, 502);
   }
-  return json({ url: data.payment_link.url, total: slimePrice + (ship ? SHIPPING : 0) });
+  return json({ url: data.payment_link.url, total: slimePrice + (shipQuote ? shipQuote.amount : 0) });
 };
 
 export const config = { path: "/api/checkout" };
