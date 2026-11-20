@@ -1,4 +1,5 @@
-// Real USPS shipping prices from Shippo, for one build-your-own jar.
+// Real USPS shipping prices from Shippo. quote(address, box) prices a box from catalog.mjs parcelFor();
+// with no box it prices one 6 oz jar.
 // Netlify environment variables (set in Netlify, never in this public repo):
 //   SHIPPO_API_KEY  your Shippo API token
 //   SHIP_FROM       where you mail from, like "123 Main St, Lafayette, LA 70508"
@@ -32,7 +33,7 @@ function parcel() {
 }
 
 // returns { amount, service, days } or throws Error("address" | "shippo")
-export async function quote(addr) {
+export async function quote(addr, box) {
   const to = cleanAddress(addr);
   if (!to) throw new Error("address");
   const key = process.env.SHIPPO_API_KEY;
@@ -45,7 +46,7 @@ export async function quote(addr) {
     body: JSON.stringify({
       address_from: from,
       address_to: { name: "Customer", ...to, country: "US" },
-      parcels: [parcel()],
+      parcels: [box || parcel()],
       async: false,
     }),
   });

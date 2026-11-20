@@ -373,10 +373,7 @@
     </div>
   </div>
 
-  <form id="order" name="slime-orders" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-    <input type="hidden" name="form-name" value="slime-orders">
-    <p hidden><label>Leave empty <input name="bot-field" id="bot"></label></p>
-    <input type="hidden" name="summary" id="summaryField">
+  <form id="order" novalidate>
 
     <div class="wrap">
       <section class="step">
@@ -435,35 +432,9 @@
       </section>
 
       <section class="step">
-        <h2><span class="num">9</span>Your info</h2>
+        <h2><span class="num">9</span>Almost done!</h2>
         <div class="field">
-          <label for="custName">Your name</label>
-          <input type="text" id="custName" name="name" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="custEmail">Email</label>
-          <input type="email" id="custEmail" name="email" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="pickup">How do you want it?</label>
-          <select id="pickup" name="pickup">
-            <option value="local">Local pickup in Lafayette, LA (free)</option>
-            <option value="ship">Ship it to me, U.S. only (USPS, priced for your address)</option>
-          </select>
-        </div>
-        <div class="field" id="addrField" hidden>
-          <label for="shStreet">Mailing address</label>
-          <input type="hidden" id="address" name="address">
-          <input type="text" id="shStreet" autocomplete="address-line1" placeholder="Street address (apt # too)" maxlength="100">
-          <div class="addr-row">
-            <input type="text" id="shCity" autocomplete="address-level2" placeholder="City" maxlength="60" aria-label="City">
-            <input type="text" id="shState" autocomplete="address-level1" placeholder="State" maxlength="2" aria-label="State (2 letters)">
-            <input type="text" id="shZip" autocomplete="postal-code" inputmode="numeric" placeholder="ZIP" maxlength="10" aria-label="ZIP code">
-          </div>
-          <p class="hint ship-quote" id="shipQuote" style="margin:0" aria-live="polite">Add your address to see the shipping price.</p>
-        </div>
-        <div class="field">
-          <label for="notes">Anything else? (optional)</label>
+          <label for="notes">Anything else about this slime? (optional)</label>
           <textarea id="notes" name="notes" placeholder="It's a birthday gift! / Extra glittery please"></textarea>
         </div>
         <div class="agree">
@@ -471,22 +442,17 @@
           <label><input type="checkbox" id="agreeBox" name="agreed-to-experiment" value="yes"> I get it! My custom slime is an experiment, and I'm okay taking a chance on a texture I might not love.</label>
         </div>
         <p class="err" id="err" hidden></p>
-        <button type="submit" class="send" id="sendBtn">Send my order request</button>
-        <p class="hint" style="margin:0;text-align:center" id="payHint">No payment yet. We'll email you to confirm and send a payment link.</p>
+        <button type="submit" class="send" id="sendBtn">Add to cart 🛒</button>
+        <p class="hint" style="margin:0;text-align:center" id="payHint">Build as many as you want! You'll pay for everything at once in your cart.</p>
       </section>
     </div>
   </form>
 
-  <!-- "might be interested" alerts: someone tapped Continue to payment but hasn't paid yet -->
-  <form name="slime-interest" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
-    <input type="hidden" name="form-name" value="slime-interest">
-    <input name="bot-field"><input name="name"><input name="email"><textarea name="summary"></textarea>
-  </form>
-
   <section class="step done" id="done" hidden>
-    <h2 style="justify-content:center">You're on the slime list! 🫧</h2>
-    <p id="doneMsg" style="margin:0"></p>
+    <h2 style="justify-content:center">Added to your cart! 🛒</h2>
+    <p id="doneMsg" style="margin:0">Your slime is waiting in your cart. Build another one, or check out when you're ready.</p>
     <pre id="doneSummary"></pre>
+    <a class="again" id="toCart" href="/cart.html" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px">Go to cart & pay 💳</a>
     <button class="again" id="again" type="button">Build another slime</button>
   </section>
 
@@ -591,8 +557,6 @@
   const CHARM_IDEAS = ["Strawberries 🍓", "Hearts", "Stars", "Rainbows", "Bows", "Flowers", "Clouds", "Mushrooms", "Bears", "Holiday"];
   const MAX_ADDINS = 5;
   const SIZE = "6 oz";
-  // shipping is priced live for their address (see /api/shipping-rate); pickup is free
-  let shipQ = { key: "", status: "idle" };
   // -------------------------------------------
 
   const $ = (s) => document.querySelector(s);
@@ -693,8 +657,8 @@
     const fee = mix.id === "diy" ? diyFee(addins.length) : 0;
     const charms = addins.some((a) => a.id === "charms");
     const name = $("#slimeName").value.trim();
-    const ship = $("#pickup").value === "ship" && shipQ.status === "ok" ? shipQ.amount : 0;
-    const total = base.price + deluxe.price + scent.price + addins.reduce((s, a) => s + a.cost, 0) + fee + ship;
+    const ship = 0; // shipping is priced in the cart for the whole box
+    const total = base.price + deluxe.price + scent.price + addins.reduce((s, a) => s + a.cost, 0) + fee;
     const col0 = SPARKLE.find((c) => c.id === color.id);
     const built = (deluxe.includes || []).map((id) => ({ ...ADDINS.find((x) => x.id === id), amt: AMOUNTS[1], col: col0, cost: 0, builtIn: true }));
     const look = deluxe.look || base.look;
@@ -876,8 +840,6 @@
       ...s.addins.map((a) => (a.col ? a.col.name + " " : "") + a.name.toLowerCase() + (a.amt.id !== "reg" ? " (" + a.amt.name + ")" : ""))];
     if (s.glitter) parts.push(s.glitter.col.name.toLowerCase() + " " + (s.glitter.id === "holo" ? "holo glitter" : "glitter") + (s.glitter.amt.id !== "reg" ? " (" + s.glitter.amt.name + ")" : ""));
     if (s.mix.id === "diy") parts.push("mix yourself");
-    if (s.ship) parts.push(money(s.ship) + " shipping");
-    else if ($("#pickup").value === "ship") parts.push("+ shipping");
     $("#pDesc").textContent = parts.join(" · ") + " · " + SIZE;
     const badge = $("#pScent");
     if (badge.dataset.id !== s.scent.id) {
@@ -889,7 +851,6 @@
     $("#pPrice").textContent = money(s.total);
     $("#glitterMore").hidden = !s.glitter;
     $("#nameCount").textContent = $("#slimeName").value.length;
-    $("#addrField").hidden = $("#pickup").value !== "ship";
     $("#diyNote").hidden = true;
     $("#diyNote").textContent = `Mix-it-yourself fee: $1 to $3 depending on your add-ins (about ${money(diyFee(s.addins.length))} for yours). We'll confirm it by email.`;
 
@@ -908,7 +869,6 @@
   }
 
   function summary(s) {
-    const pickup = $("#pickup").selectedOptions[0].textContent;
     return [
       `Slime name: ${s.name || "(none)"}`,
       `Base: ${s.base.name} (${SIZE}) ${money(s.base.price)}`,
@@ -919,11 +879,8 @@
       `Add-ins: ${s.addins.length ? s.addins.map((a) => a.charms ? `Charms +${money(a.cost)}` : `${a.col ? a.col.name + " " : ""}${a.name} (${a.amt.name}) +${money(a.cost)}`).join(", ") : "none"}`,
       `Mixing: ${s.mix.name}${s.fee ? ` (fee about ${money(s.fee)}, to confirm)` : ""}`,
       `Charms: ${s.charms ? `${$("#charmWish").value.trim() || "(not specified)"} (to confirm)` : "none"}`,
-      `How: ${pickup}`,
-      `Mailing address: ${$("#pickup").value === "ship" ? addrText() : "none"}`,
       `Notes: ${$("#notes").value.trim() || "none"}`,
-      `Shipping: ${s.ship ? money(s.ship) + " (" + shipQ.service + ")" : "free (pickup)"}`,
-      `Estimated total: ${money(s.total)}`,
+      `Price: ${money(s.total - s.fee)}${s.fee ? " + mixing fee (to confirm)" : ""}`,
       `Agreed custom slime is an experiment (texture not guaranteed): ${$("#agreeBox").checked ? "yes" : "no"}`,
     ].join("\n");
   }
@@ -935,127 +892,33 @@
   const LIVE = /jellybeanslime\.(com|netlify\.app)$/.test(location.hostname);
   $("#testBanner").hidden = LIVE;
 
-  // ---------- live shipping price ----------
-  const addrObj = () => ({ street1: $("#shStreet").value.trim(), city: $("#shCity").value.trim(), state: $("#shState").value.trim().toUpperCase(), zip: $("#shZip").value.trim() });
-  const addrText = () => { const a = addrObj(); return `${a.street1}, ${a.city}, ${a.state} ${a.zip}`; };
-  const addrDone = () => { const a = addrObj(); return a.street1.length >= 3 && a.city.length >= 2 && /^[A-Za-z]{2}$/.test(a.state) && /^\d{5}(-\d{4})?$/.test(a.zip); };
-  let shipTimer = 0;
-  function showShip() {
-    const el = $("#shipQuote");
-    if (shipQ.status === "ok") el.innerHTML = `Shipping: <b>${money(shipQ.amount)}</b> · ${shipQ.service}${shipQ.days ? ` (about ${shipQ.days} day${shipQ.days > 1 ? "s" : ""})` : ""}. Already in your total!`;
-    else if (shipQ.status === "loading") el.textContent = "Figuring out your shipping price… 📦";
-    else if (shipQ.status === "error") el.textContent = shipQ.msg;
-    else el.textContent = "Add your address to see the shipping price.";
-  }
-  function getShipping() {
-    if ($("#pickup").value !== "ship" || !addrDone()) { shipQ = { key: "", status: "idle" }; showShip(); render(); return; }
-    const key = JSON.stringify(addrObj());
-    if (key === shipQ.key && shipQ.status !== "error") return;
-    shipQ = { key, status: "loading" }; showShip(); render();
-    const done = (q) => { if (shipQ.key !== key) return; shipQ = q; showShip(); render(); };
-    if (!LIVE) return setTimeout(() => done({ key, status: "ok", amount: 7, service: "Test mode price", days: null }), 300);
-    fetch("/api/shipping-rate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address: addrObj() }) })
-      .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
-      .then(({ ok, d }) => ok && d.amount ? done({ key, status: "ok", amount: d.amount, service: d.service, days: d.days })
-        : done({ key, status: "error", msg: d && d.error === "address" ? "Hmm, that address doesn't look complete. Check the street, city, state and ZIP." : "We couldn't price shipping to that address. Double-check it, or email support@jellybeanslime.com." }))
-      .catch(() => done({ key, status: "error", msg: "We couldn't price shipping right now. Please try again in a minute." }));
-  }
-  ["#shStreet", "#shCity", "#shState", "#shZip"].forEach((id) => $(id).addEventListener("input", () => { clearTimeout(shipTimer); shipTimer = setTimeout(getShipping, 700); }));
-  $("#pickup").addEventListener("change", getShipping);
-
   $("#order").addEventListener("submit", (e) => {
     e.preventDefault();
     const err = $("#err");
-    const fail = (msg) => { err.textContent = msg; err.hidden = false; };
-    if (!$("#custName").value.trim() || !/^\S+@\S+\.\S+$/.test($("#custEmail").value.trim()))
-      return fail("Please add your name and a real email so we can reach you.");
-    if ($("#pickup").value === "ship" && shipQ.status !== "ok")
-      return fail(shipQ.status === "loading" ? "One sec, still figuring out your shipping price…" : "Please finish your mailing address (street, city, state, ZIP) so we can price shipping.");
-    $("#address").value = $("#pickup").value === "ship" ? addrText() : "";
-    if (!$("#agreeBox").checked)
-      return fail("Please check the box to agree that custom slime is an experiment.");
+    if (!$("#agreeBox").checked) {
+      err.textContent = "Please check the box to agree that custom slime is an experiment.";
+      err.hidden = false;
+      return;
+    }
     err.hidden = true;
-    const text = summary(state());
-    $("#summaryField").value = text;
-    const finish = () => {
-      $("#order").hidden = true;
-      $("#done").hidden = false;
-      $("#doneSummary").textContent = text;
-      $("#doneMsg").textContent = LIVE
-        ? "We'll email you within 2 days to confirm your slime and send a payment link."
-        : "Test mode: this is what Deanna would receive. Nothing was sent.";
-      $("#done").scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-    if (!LIVE) return finish();
     const st = state();
-    const btn = $("#sendBtn");
-    btn.disabled = true;
-    btn.textContent = CHECKOUT_READY ? "Taking you to checkout… 🫧" : "Sending… 🫧";
-    const formBody = () => new URLSearchParams(new FormData(e.target)).toString();
-    const sendForm = (body) => fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body,
-    }).then((r) => { if (!r.ok) throw 0; });
-    // With Square on: no email yet. Save the order here and only send it to Deanna after they pay.
-    (CHECKOUT_READY ? Promise.resolve() : sendForm(formBody())).then(() => {
-      if (!CHECKOUT_READY) return finish();
-      $("#summaryField").value = "✅ PAID with Square\n\n" + text;
-      try { sessionStorage.setItem("jb-pending-order", formBody()); } catch (_) {}
-      // heads-up email: they might be interested (not paid yet). Never blocks checkout.
-      sendForm(new URLSearchParams({
-        "form-name": "slime-interest",
-        name: $("#custName").value.trim(),
-        email: $("#custEmail").value.trim(),
-        summary: "👀 MIGHT BE INTERESTED: they went to checkout but haven't paid yet.\nIf they pay, you'll get a separate ✅ PAID email.\n\n" + text,
-      }).toString()).catch(() => {});
-      return fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          base: st.base.id, deluxe: st.deluxe.id,
-          addins: st.addins.map((a) => ({ id: a.id, amt: a.amt.id })),
-          pickup: $("#pickup").value, slimeName: st.name, address: addrObj(),
-          email: $("#custEmail").value.trim(), summary: text,
-        }),
-      }).then((r) => r.json()).then((d) => {
-        if (d && d.url) { location.href = d.url; return; }
-        throw 0;
-      }).catch(() => {
-        // Square didn't answer: fall back to the old way (order request + payment link by email)
-        $("#summaryField").value = text;
-        try { sessionStorage.removeItem("jb-pending-order"); } catch (_) {}
-        return sendForm(formBody()).then(finish);
-      });
-    }).catch(() => {
-      btn.disabled = false; btn.textContent = CHECKOUT_READY ? "Continue to payment 💳" : "Send my order request";
-      fail("That didn't go through. Please try again, or email support@jellybeanslime.com.");
+    const text = summary(st);
+    window.JBCart.add({
+      kind: "custom",
+      name: st.name,
+      desc: $("#pDesc").textContent,
+      color: (st.color.c1 || st.color.c2 || st.color.hex || ""),
+      price: st.total - st.fee,
+      picks: { base: st.base.id, deluxe: st.deluxe.id, addins: st.addins.map((a) => ({ id: a.id, amt: a.amt.id })) },
+      summary: text,
     });
-  });
-
-  // When Square checkout is set up on Netlify, switch the button to "pay now".
-  let CHECKOUT_READY = false;
-  if (LIVE) fetch("/api/checkout").then((r) => r.ok ? r.json() : null).then((d) => {
-    if (!d || !d.ready) return;
-    CHECKOUT_READY = true;
-    $("#sendBtn").textContent = "Continue to payment 💳";
-    $("#payHint").textContent = "You'll pay securely with Square on the next screen. Your total is figured out for you.";
-  }).catch(() => {});
-  // back from Square after paying
-  if (new URLSearchParams(location.search).get("paid")) {
-    // they paid: now send Deanna the order details (once)
-    let saved = null;
-    try { saved = sessionStorage.getItem("jb-pending-order"); } catch (_) {}
-    if (saved && LIVE) fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: saved,
-    }).then((r) => { if (r.ok) try { sessionStorage.removeItem("jb-pending-order"); } catch (_) {} }).catch(() => {});
     $("#order").hidden = true;
     $("#done").hidden = false;
-    $("#doneSummary").textContent = "";
-    $("#doneMsg").textContent = "Payment received! 🎉 We'll start mixing your slime and email you when it's ready.";
-  }
+    $("#doneSummary").textContent = text;
+    $("#done").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  // old Square return links now go to the cart
+  if (new URLSearchParams(location.search).get("paid")) location.replace("/cart.html?paid=1");
 
   // ---------- peeking monsters change color each time they pop out ----------
   const MONSTER_LOOKS = [
@@ -1084,6 +947,8 @@
     $("#done").hidden = true;
     $("#order").hidden = false;
     $("#slimeName").value = "";
+    $("#notes").value = "";
+    $("#agreeBox").checked = false;
     render();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
@@ -1196,5 +1061,6 @@
   render();
 </script>
 
+<script src="/cart.js" defer></script>
 </body>
 </html>

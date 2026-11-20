@@ -117,6 +117,8 @@
   .product .info { padding: 10px 2px 4px; flex: 1; display: flex; flex-direction: column; align-items: center; }
   .product h3 { font-family: "Grandstander", sans-serif; font-weight: 800; font-size: 19px; line-height: 1.1; }
   .product .tex { font-size: 13px; opacity: .7; margin: 3px 0 8px; }
+  .product .buy { border: 0; cursor: pointer; font-family: inherit; width: 100%;
+  }
   .product .buy {
     margin-top: auto; display: inline-block; text-decoration: none;
     font-family: "Grandstander", sans-serif; font-weight: 700; font-size: 14px; line-height: 1.2;
@@ -219,23 +221,23 @@
 
   <section class="card shop" id="shop">
     <h2>Shop the first slimes 🛍️</h2>
-    <p>6oz jars, handmade in small batches. Buy right here or on Etsy!</p>
+    <p>6oz jars, handmade in small batches. Fill your cart and check out once!</p>
     <div class="products">
       <div class="product">
-        <a href="https://square.link/u/KSvlYPdy" target="_blank" rel="noopener"><img src="/iced-lemonade.jpg" alt="Iced Lemonade jelly cube slime with lemon charms" width="800" height="800" loading="lazy"></a>
+        <img src="/iced-lemonade.jpg" alt="Iced Lemonade jelly cube slime with lemon charms" width="800" height="800" loading="lazy">
         <div class="info">
           <h3>Iced Lemonade</h3>
           <p class="tex">jelly cube x bingsu</p>
-          <a class="buy" href="https://square.link/u/KSvlYPdy" target="_blank" rel="noopener">Buy now · $12 + shipping</a>
+          <button type="button" class="buy" data-add="iced-lemonade">Add to cart · $12</button>
           <a class="alt" href="https://jellybeanslime337.etsy.com/listing/4611024360" target="_blank" rel="noopener">or on Etsy</a>
         </div>
       </div>
       <div class="product">
-        <a href="https://square.link/u/uUNqrXxG" target="_blank" rel="noopener"><img src="/fairy-floss.jpg" alt="Fairy Floss pink cloud dough slime with rose and bow charms" width="800" height="800" loading="lazy"></a>
+        <img src="/fairy-floss.jpg" alt="Fairy Floss pink cloud dough slime with rose and bow charms" width="800" height="800" loading="lazy">
         <div class="info">
           <h3>Fairy Floss</h3>
           <p class="tex">cloud dough</p>
-          <a class="buy" href="https://square.link/u/uUNqrXxG" target="_blank" rel="noopener">Buy now · $12 + shipping</a>
+          <button type="button" class="buy" data-add="fairy-floss">Add to cart · $12</button>
           <a class="alt" href="https://jellybeanslime337.etsy.com/listing/4611027106" target="_blank" rel="noopener">or on Etsy</a>
         </div>
       </div>
@@ -276,7 +278,7 @@
         <div class="info">
           <h3>Mystery Slime Pack 🎁</h3>
           <p class="tex">3 surprise 4oz slimes, all different textures!</p>
-          <a class="buy" href="https://square.link/u/tiwv8Vkx" target="_blank" rel="noopener">3 for $20 + shipping</a>
+          <button type="button" class="buy" data-add="mystery">Add to cart · 3 for $20</button>
           <button type="button" class="more-info" id="mysteryInfo" aria-haspopup="dialog">More info</button>
         </div>
       </div>
@@ -465,5 +467,6 @@
     pop.addEventListener('click', function (e) { if (e.target === pop) pop.close(); });
   })();
 </script>
+<script src="/cart.js" defer></script>
 </body>
 </html>
