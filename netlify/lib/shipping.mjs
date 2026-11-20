@@ -2,7 +2,7 @@
 // Netlify environment variables (set in Netlify, never in this public repo):
 //   SHIPPO_API_KEY  your Shippo API token
 //   SHIP_FROM       where you mail from, like "123 Main St, Lafayette, LA 70508"
-//   SHIP_PARCEL     optional box + packed weight, "length,width,height,ounces" in inches (default "6,6,4,16")
+//   SHIP_PARCEL     optional box + packed weight, "length,width,height,ounces" in inches (default "6,6,4,12")
 // Without SHIPPO_API_KEY it falls back to the old flat price so the site keeps working.
 
 const FLAT = 7;
@@ -26,9 +26,9 @@ function fromAddress() {
 }
 
 function parcel() {
-  const [l, w, h, oz] = (process.env.SHIP_PARCEL || "6,6,4,16").split(",").map((x) => parseFloat(x));
+  const [l, w, h, oz] = (process.env.SHIP_PARCEL || "6,6,4,12").split(",").map((x) => parseFloat(x));
   const n = (x, d) => (Number.isFinite(x) && x > 0 ? String(x) : d);
-  return { length: n(l, "6"), width: n(w, "6"), height: n(h, "4"), distance_unit: "in", weight: n(oz, "16"), mass_unit: "oz" };
+  return { length: n(l, "6"), width: n(w, "6"), height: n(h, "4"), distance_unit: "in", weight: n(oz, "12"), mass_unit: "oz" };
 }
 
 // returns { amount, service, days } or throws Error("address" | "shippo")
