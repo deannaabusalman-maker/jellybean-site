@@ -52,7 +52,9 @@ export async function quote(addr, box) {
   });
   const data = await r.json().catch(() => ({}));
   const rates = Array.isArray(data.rates) ? data.rates : [];
-  const usps = rates.filter((x) => x.provider === "USPS");
+  // only services that are allowed for slime (never Media Mail or Library Mail)
+  const OK = /ground.?advantage|priority/i;
+  const usps = rates.filter((x) => x.provider === "USPS" && OK.test(`${x.servicelevel?.token || ""} ${x.servicelevel?.name || ""}`) && !/media|library/i.test(x.servicelevel?.token || ""));
   const pool = (usps.length ? usps : rates).filter((x) => x.currency === "USD" && Number(x.amount) > 0);
   if (!r.ok || !pool.length) {
     console.log("Shippo error", r.status, JSON.stringify(data.messages || data.detail || data).slice(0, 500));
