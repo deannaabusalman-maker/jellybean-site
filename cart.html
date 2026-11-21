@@ -161,7 +161,7 @@
 
   <footer>
     Slime is not food. Ages 3+. Adult supervision recommended.<br>
-    Questions? support@jellybeanslime.com
+    Questions? hello@jellybeanslime.com
   </footer>
 </main>
 
@@ -286,7 +286,7 @@
     fetch("/api/shipping-rate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address: addrObj(), items: cartForServer() }) })
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => ok && d.amount ? done({ key, status: "ok", amount: d.amount, service: d.service, days: d.days })
-        : done({ key, status: "error", msg: d && d.error === "address" ? "Hmm, that address doesn't look complete. Check the street, city, state and ZIP." : "We couldn't price shipping to that address. Double-check it, or email support@jellybeanslime.com." }))
+        : done({ key, status: "error", msg: d && d.error === "address" ? "Hmm, that address doesn't look complete. Check the street, city, state and ZIP." : "We couldn't price shipping to that address. Double-check it, or email hello@jellybeanslime.com." }))
       .catch(() => done({ key, status: "error", msg: "We couldn't price shipping right now. Please try again in a minute." }));
   }
   ["#shStreet", "#shCity", "#shState", "#shZip"].forEach((id) => { const go = () => { clearTimeout(shipTimer); shipTimer = setTimeout(getShipping, 900); }; $(id).addEventListener("input", go); $(id).addEventListener("change", go); });
@@ -370,7 +370,7 @@
         .then(() => { C.write([]); $("#cartCard").hidden = true; $("#checkout").hidden = true; $("#done").hidden = false;
           $("#doneTitle").textContent = "Order request sent! 🫧";
           $("#doneMsg").textContent = "Checkout had a hiccup, so we got your order as a request instead. We'll email you a payment link within 2 days."; })
-        .catch(() => fail("That didn't go through. Please try again, or email support@jellybeanslime.com."));
+        .catch(() => fail("That didn't go through. Please try again, or email hello@jellybeanslime.com."));
     });
   });
 
