@@ -196,6 +196,16 @@
   /* pop-ups stay centered on screen while open */
   dialog[open] { position: fixed; inset: 0; margin: auto; height: fit-content; }
   html:has(dialog[open]) { overflow: hidden; }
+  /* newsletter pop-up */
+  .nl-pop { border-color: #ffb3d1; }
+  .nl-pop .nl-big { font-family: "Grandstander", sans-serif; font-weight: 800; font-size: 46px; line-height: 1; color: var(--pink); margin: 4px 0 2px; }
+  .nl-pop .nl-big small { display: block; font-size: 22px; color: var(--ink); margin-top: 2px; }
+  .nl-pop h2 { padding: 0 34px; font-size: 21px; }
+  .nl-pop .nl-big { margin-bottom: 8px; }
+  .nl-pop form { margin-top: 12px; }
+  .nl-pop .nl-code { display: inline-block; font-family: "Grandstander", sans-serif; font-weight: 800; font-size: 28px; letter-spacing: 1px; padding: 8px 20px; margin: 10px 0 4px; border: 3px dashed var(--pink); border-radius: 16px; background: #fff0f6; }
+  .nl-pop .nl-no { background: none; box-shadow: none; color: var(--ink); opacity: .6; font: 700 14px "Nunito", sans-serif; padding: 4px 8px; margin-top: 10px; text-decoration: underline; }
+  .nl-pop .nl-fine { font-size: 12px; opacity: .6; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -334,14 +344,14 @@
 
   <section class="card" id="list">
     <h2>Want first dibs?</h2>
-    <p>Drop your email below or email <a href="mailto:drops@jellybeanslime.com">drops@jellybeanslime.com</a> to get on the list.</p>
+    <p>Drop your email below or email <a href="mailto:drops@jellybeanslime.com">drops@jellybeanslime.com</a> to get on the list. New subscribers get <b>20% off</b> their first order!</p>
     <form name="drops-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="signup">
       <input type="hidden" name="form-name" value="drops-list">
       <p class="hidden"><label>Leave this empty: <input name="bot-field"></label></p>
       <input type="email" name="email" placeholder="your@email.com" required aria-label="Email address">
       <button type="submit">Get on the list</button>
     </form>
-    <p class="hidden" id="thanks" style="margin-top:16px;font-family:Fredoka,sans-serif;font-size:20px">You're on the list! 🫧</p>
+    <p class="hidden" id="thanks" style="margin-top:16px;font-family:Fredoka,sans-serif;font-size:20px">You're on the list! 🫧<br><span style="font-size:16px">Your 20% off code: <b>WELCOME20</b></span></p>
   </section>
 
   <section class="card market">
@@ -387,6 +397,7 @@
     }).then(function () {
       form.classList.add('hidden');
       document.getElementById('thanks').classList.remove('hidden');
+      try { localStorage.setItem('jb-nl', 'joined'); } catch (_) {}
     }).catch(function () {
       form.submit();
     });
@@ -509,5 +520,64 @@
   })();
 </script>
 <script src="/cart.js" defer></script>
+<dialog class="tex-pop nl-pop" id="nlPop" aria-labelledby="nlTitle">
+  <button type="button" class="tex-close" id="nlClose" aria-label="Close">✕</button>
+  <div id="nlAsk">
+    <h2 id="nlTitle">Join the slime list! 🫧</h2>
+    <p class="nl-big">20% OFF <small>your first order</small></p>
+    <p class="tex-intro">Sign up for our newsletter to get first dibs on new drops, restocks and where to find us.</p>
+    <form name="drops-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="nlForm">
+      <input type="hidden" name="form-name" value="drops-list">
+      <p class="hidden"><label>Leave this empty: <input name="bot-field"></label></p>
+      <input type="email" name="email" placeholder="your@email.com" required aria-label="Email address">
+      <button type="submit">Get my 20% off</button>
+    </form>
+    <p class="nl-err hidden" id="nlErr" style="color:#c2185b;font-size:14px;margin-top:8px">That didn't go through. Please try again!</p>
+    <button type="button" class="nl-no" id="nlNo">No thanks</button>
+  </div>
+  <div id="nlDone" class="hidden">
+    <h2>You're on the list! 🎉</h2>
+    <p class="tex-intro">Here's your code for 20% off your first order:</p>
+    <div class="nl-code">WELCOME20</div>
+    <p class="nl-fine">Enter it in your cart at checkout. Takes 20% off slimes (not shipping).</p>
+    <a class="btn" href="/cart.html?code=WELCOME20" id="nlShop">Shop now</a>
+  </div>
+</dialog>
+<script>
+// Newsletter pop-up: shows once after a few seconds. Closing it hides it for 14 days; signing up hides it for good.
+(function () {
+  var KEY = 'jb-nl', pop = document.getElementById('nlPop');
+  if (!pop || typeof pop.showModal !== 'function') return;
+  var get = function () { try { return localStorage.getItem(KEY); } catch (_) { return 'x'; } };
+  var set = function (v) { try { localStorage.setItem(KEY, v); } catch (_) {} };
+  var v = get();
+  if (v === 'joined' || (v && Date.now() < +v)) return;
+  if (/[?&]paid=/.test(location.search)) return;
+  var later = function () { if (get() !== 'joined') set(String(Date.now() + 14 * 864e5)); };
+  setTimeout(function () {
+    if (document.querySelector('dialog[open]')) return; // don't cover another pop-up
+    pop.showModal();
+    later(); // counts as seen even if they just leave
+  }, 6000);
+  var close = function () { pop.close(); };
+  document.getElementById('nlClose').addEventListener('click', close);
+  document.getElementById('nlNo').addEventListener('click', close);
+  pop.addEventListener('click', function (e) { if (e.target === pop) close(); }); // tap outside
+  document.getElementById('nlForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target, btn = form.querySelector('button');
+    btn.disabled = true;
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString() })
+      .then(function (r) {
+        if (!r.ok) throw 0;
+        set('joined');
+        document.getElementById('nlAsk').classList.add('hidden');
+        document.getElementById('nlDone').classList.remove('hidden');
+      })
+      .catch(function () { btn.disabled = false; document.getElementById('nlErr').classList.remove('hidden'); });
+  });
+})();
+</script>
 </body>
 </html>
