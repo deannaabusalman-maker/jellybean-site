@@ -79,6 +79,13 @@
   }
   button.send:active { transform: translateY(5px); box-shadow: none; }
   button.send:disabled { opacity: .7; cursor: wait; }
+  .promo { display: flex; gap: 8px; margin-bottom: 12px; }
+  .promo input { text-transform: uppercase; }
+  .promo button { flex: none; border: 0; cursor: pointer; color: #fff; font: 800 15px "Grandstander", sans-serif; padding: 0 16px; border-radius: 999px; background: var(--purple); box-shadow: 0 3px 0 var(--purple-dk); }
+  .promo-msg { font-size: 14px; margin: -4px 0 12px; }
+  .promo-msg.ok { color: #12946f; }
+  .promo-msg.bad { color: #c2185b; }
+  .totals .disc { color: #12946f; }
   .err { color: #c2185b; font-size: 14px; margin-top: 10px; }
   .note { font-size: 13px; opacity: .7; margin-top: 10px; text-align: center; }
   .done { text-align: center; }
@@ -142,8 +149,14 @@
     </section>
 
     <section class="card pay" id="payCard">
+      <div class="promo">
+        <input type="text" id="promoCode" placeholder="Coupon code" aria-label="Coupon code" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="characters">
+        <button type="button" id="promoBtn">Apply</button>
+      </div>
+      <p class="promo-msg" id="promoMsg" aria-live="polite" hidden></p>
       <div class="totals">
         <div><span>Slimes</span><span id="tSub">$0</span></div>
+        <div class="disc" id="tDiscRow" hidden><span id="tDiscLabel">Coupon</span><span id="tDisc">−$0</span></div>
         <div><span id="tShipLabel">Shipping</span><span id="tShip">add address</span></div>
         <div class="grand"><span>Total</span><span id="tTotal">$0</span></div>
       </div>
@@ -257,6 +270,26 @@
     ? { kind: "shop", id: it.id, qty: it.qty || 1 }
     : { kind: "custom", qty: it.qty || 1, name: it.name || "", picks: it.picks, summary: it.summary || "" });
 
+  // ---- coupon code (checked again on the server) ----
+  let promo = null;
+  const discount = () => promo ? Math.round(subtotal() * promo.pct) / 100 : 0;
+  function applyCode() {
+    const v = $("#promoCode").value.trim().toUpperCase().replace(/\s+/g, "");
+    const msg = $("#promoMsg");
+    const show = (t, ok) => { msg.textContent = t; msg.className = "promo-msg " + (ok ? "ok" : "bad"); msg.hidden = false; };
+    if (!v) { promo = null; msg.hidden = true; totals(); return; }
+    const found = (d) => { if (d && d.ok) { promo = { code: d.code, pct: d.pct }; show(`🎉 ${d.code} applied: ${d.pct}% off your slimes!`, true); }
+      else { promo = null; show("Hmm, that code doesn't work. Check the spelling?", false); } totals(); };
+    if (!LIVE) return found(v === "WELCOME20" ? { ok: true, code: v, pct: 20 } : { ok: false });
+    fetch("/api/cart-checkout?code=" + encodeURIComponent(v)).then((r) => r.json()).then(found)
+      .catch(() => show("Couldn't check that code right now. Try again in a minute.", false));
+  }
+  $("#promoBtn").addEventListener("click", applyCode);
+  $("#promoCode").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); applyCode(); } });
+  $("#promoCode").addEventListener("input", () => { if (promo) { promo = null; $("#promoMsg").hidden = true; totals(); } });
+  const fromUrl = new URLSearchParams(location.search).get("code");
+  if (fromUrl) { $("#promoCode").value = fromUrl.toUpperCase(); setTimeout(applyCode, 0); }
+
   function totals() {
     const sub = subtotal();
     $("#tSub").textContent = money(sub);
@@ -268,7 +301,10 @@
       if (shipQ.status === "ok") { ship = shipQ.amount; $("#tShip").textContent = money(ship); }
       else $("#tShip").textContent = shipQ.status === "loading" ? "figuring it out…" : "add address";
     }
-    $("#tTotal").textContent = money(sub + ship);
+    const disc = discount();
+    $("#tDiscRow").hidden = !disc;
+    if (disc) { $("#tDiscLabel").textContent = `Coupon ${promo.code} (${promo.pct}% off)`; $("#tDisc").textContent = "−" + money(disc); }
+    $("#tTotal").textContent = money(sub - disc + ship);
     const el = $("#shipQuote");
     if (shipQ.status === "ok") el.innerHTML = `Shipping: <b>${money(shipQ.amount)}</b> · ${esc(shipQ.service)}${shipQ.days ? ` (about ${shipQ.days} day${shipQ.days > 1 ? "s" : ""})` : ""}. One box for everything!`;
     else if (shipQ.status === "loading") el.textContent = "Figuring out your shipping price… 📦";
@@ -322,7 +358,8 @@
       `Mailing address: ${isShip() ? addrText() : "none"}`,
       `Shipping: ${isShip() ? money(ship) + " (" + (shipQ.service || "") + ")" : "free (pickup)"}`,
       `Notes: ${$("#notes").value.trim() || "none"}`,
-      `TOTAL: ${money(subtotal() + ship)}`,
+      ...(promo ? [`Coupon: ${promo.code} (${promo.pct}% off) −${money(discount())}`] : []),
+      `TOTAL: ${money(subtotal() - discount() + ship)}`,
     ].join("\n");
   }
   const sendForm = (fields) => fetch("/", {
@@ -357,13 +394,14 @@
       summary: "👀 MIGHT BE INTERESTED: they went to checkout but haven't paid yet.\nIf they pay, you'll get a separate ✅ PAID email.\n\n" + text }).catch(() => {});
     fetch("/api/cart-checkout", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: cartForServer(), pickup: order.pickup, address: addrObj(), name, email }),
+      body: JSON.stringify({ items: cartForServer(), pickup: order.pickup, address: addrObj(), name, email, code: promo ? promo.code : "" }),
     }).then((r) => r.json()).then((d) => {
       if (d && d.url) { location.href = d.url; return; }
       throw d || 0;
     }).catch((d) => {
       try { sessionStorage.removeItem(PENDING); } catch (_) {}
       btn.disabled = false; btn.textContent = "Checkout with Square 💳";
+      if (d && d.error === "code") { promo = null; totals(); return fail("That coupon code doesn't work anymore. Remove it and try again."); }
       if (d && d.error === "address") return fail("Hmm, that address doesn't look right. Check the street, city, state and ZIP.");
       // Square didn't answer: send the order as a request so nothing is lost
       sendForm({ ...order, summary: "⚠️ NOT PAID YET (checkout didn't load). Send them a payment link.\n\n" + text })

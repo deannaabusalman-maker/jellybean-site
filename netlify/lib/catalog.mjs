@@ -68,3 +68,13 @@ export function parcelFor(lines) {
   const [l, w, h] = jars <= 2 ? [6, 6, 4] : jars <= 6 ? [8, 8, 6] : jars <= 12 ? [12, 10, 6] : [14, 12, 8];
   return { length: String(l), width: String(w), height: String(h), distance_unit: "in", weight: String(oz), mass_unit: "oz" };
 }
+
+// Coupon codes. To add one: add a line here (CODE: percent off the slimes; shipping is never discounted).
+// To turn a code off: delete its line.
+export const CODES = {
+  WELCOME20: { pct: 20, label: "Welcome 20% off" },
+};
+export const findCode = (s) => {
+  const k = String(s || "").trim().toUpperCase().replace(/\s+/g, "");
+  return CODES[k] ? { code: k, ...CODES[k] } : null;
+};
