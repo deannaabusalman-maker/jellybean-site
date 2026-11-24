@@ -2,7 +2,7 @@
 // prices shipping for the whole box, and makes one Square checkout link for everything.
 // Uses the same Netlify environment variables as checkout.mjs.
 import { quote } from "../lib/shipping.mjs";
-import { priceCart, parcelFor, clean } from "../lib/catalog.mjs";
+import { priceCart, parcelFor, clean, findCode } from "../lib/catalog.mjs";
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
@@ -11,7 +11,11 @@ const cents = (d) => ({ amount: Math.round(d * 100), currency: "USD" });
 export default async (req) => {
   const token = process.env.SQUARE_ACCESS_TOKEN;
   const location = process.env.SQUARE_LOCATION_ID;
-  if (req.method === "GET") return json({ ready: Boolean(token && location) });
+  if (req.method === "GET") {
+    const q = new URL(req.url).searchParams.get("code");
+    if (q != null) { const c = findCode(q); return json(c ? { ok: true, code: c.code, pct: c.pct } : { ok: false }); }
+    return json({ ready: Boolean(token && location) });
+  }
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   if (!token || !location) return json({ error: "not set up" }, 503);
 
@@ -26,6 +30,15 @@ export default async (req) => {
     return li;
   });
   let total = lines.reduce((s, l) => s + l.price * l.qty, 0);
+
+  // coupon: a percent off the slimes only (shipping line is added after, so it never gets the discount)
+  let promo = null;
+  if (b.code) {
+    promo = findCode(b.code);
+    if (!promo) return json({ error: "code" }, 400);
+    lineItems.forEach((li) => { li.applied_discounts = [{ discount_uid: "promo" }]; });
+    total -= Math.round(total * promo.pct) / 100;
+  }
 
   if (b.pickup === "ship") {
     let q;
@@ -42,13 +55,16 @@ export default async (req) => {
   const site = new URL(req.url).origin;
   const body = {
     idempotency_key: crypto.randomUUID(),
-    order: { location_id: location, line_items: lineItems, reference_id: "website-cart" },
+    order: {
+      location_id: location, line_items: lineItems, reference_id: "website-cart",
+      ...(promo && { discounts: [{ uid: "promo", name: `${promo.code} (${promo.pct}% off)`, percentage: String(promo.pct), scope: "LINE_ITEM" }] }),
+    },
     checkout_options: {
       redirect_url: `${site}/cart.html?paid=1`,
       ask_for_shipping_address: false, // we already have their address (shipping was priced from it)
       allow_tipping: false,
     },
-    payment_note: clean(`${b.pickup === "ship" ? "SHIP" : "LOCAL PICKUP"} · ${clean(b.name, 60)}`, 200),
+    payment_note: clean(`${b.pickup === "ship" ? "SHIP" : "LOCAL PICKUP"} · ${clean(b.name, 60)}${promo ? ` · code ${promo.code}` : ""}`, 200),
   };
   const email = clean(b.email, 120);
   if (/^\S+@\S+\.\S+$/.test(email)) body.pre_populated_data = { buyer_email: email };
