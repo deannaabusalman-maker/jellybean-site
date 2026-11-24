@@ -239,7 +239,7 @@
     <span class="ribbon">🎄 Small Business Saturday</span>
     <h2>Find us at the Christmas Fair!</h2>
     <p class="ev-when">Saturday, Nov 28 · 9am to 1pm</p>
-    <p class="ev-where">📍 VENUE_NAME · VENUE_ADDRESS</p>
+    <p class="ev-where">📍 <a href="https://www.google.com/maps/search/?api=1&amp;query=605%20S%20College%20Rd%2C%20Lafayette%2C%20LA" target="_blank" rel="noopener">605 S College Rd, Lafayette, LA</a></p>
     <ul class="ev-menu">
       <li><b>Slime Bar</b><span class="pr">$16 · 2 for $30</span><small>Build your own 8oz butter slime: pick your color, scent, 2 add-ins + glitter and a charm</small></li>
       <li><b>Specialty Slimes</b><span class="pr">$12 · 2 for $22</span><small>6oz jars: clear, crunchy and more. Ask to try one!</small></li>
@@ -247,7 +247,7 @@
       <li><b>Desk Buddies</b><span class="pr">$10</span><small>Stress-less stocking stuffers</small></li>
     </ul>
     <p class="note">Charms are small parts. Not for children under 3.</p>
-    <a class="btn" href="CAL_LINK" target="_blank" rel="noopener">📅 Add to my calendar</a>
+    <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Jellybean+Slime+at+the+Christmas+Fair&amp;dates=20261128T150000Z%2F20261128T190000Z&amp;location=605+S+College+Rd%2C+Lafayette%2C+LA&amp;details=Slime+bar%2C+specialty+slimes%2C+stocking+stuffer+kits+and+desk+buddies%21+jellybeanslime.com" target="_blank" rel="noopener">📅 Add to my calendar</a>
   </section>
 
   <section class="card shop" id="shop">
@@ -502,7 +502,10 @@
   // hide the upcoming event card once it's over
   (function () {
     var ev = document.getElementById('event');
-    if (ev && Date.now() > Date.parse(ev.getAttribute('data-ends'))) ev.remove();
+    if (!ev) return;
+    var soon = document.querySelector('.card.market');
+    if (Date.now() > Date.parse(ev.getAttribute('data-ends'))) ev.remove();
+    else if (soon) soon.remove(); // no "coming soon" card while an event is listed
   })();
 </script>
 <script src="/cart.js" defer></script>
